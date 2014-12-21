@@ -1,9 +1,6 @@
 package uk.org.spb.serviceont;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.ListActivity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,7 +9,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 public class MainActivity extends ListActivity {
@@ -21,13 +17,7 @@ public class MainActivity extends ListActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-    wordList = new ArrayList<String>();
-    adapter = new ArrayAdapter<String>(this,
-        android.R.layout.simple_list_item_1, android.R.id.text1,
-        wordList);
-  
-    setListAdapter(adapter);
+	setContentView(R.layout.activity_main);
   }
 
   @Override
@@ -58,16 +48,8 @@ public class MainActivity extends ListActivity {
       s = null;
     }
   };
-  private ArrayAdapter<String> adapter;
-  private List<String> wordList;
 
   public void onClick(View view) {
-    if (s != null) {
-      Toast.makeText(this, "Number of elements" + s.getWordList().size(),
-          Toast.LENGTH_SHORT).show();
-      wordList.clear();
-      wordList.addAll(s.getWordList());
-      adapter.notifyDataSetChanged();
-    }
+    
   }
 } 
