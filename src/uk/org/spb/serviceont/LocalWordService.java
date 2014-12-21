@@ -51,7 +51,7 @@ public class LocalWordService extends Service {
 	    player.start();
 	    Log.d("LocalWordService","playSong comleted*************");
 	} catch (Exception e) {
-	    Log.e("MUSIC SERVICE", "Error setting data source", e);
+	    Log.e("LocalWordService", "Error setting data source", e);
 	}
     }
 
