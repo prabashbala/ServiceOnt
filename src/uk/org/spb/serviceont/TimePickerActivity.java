@@ -23,6 +23,7 @@ public class TimePickerActivity extends Activity {
     private TextView displayTime;
     private Button pickTime;
     private Button setAlarm;
+    private Button stopAudioPlayback;
 
     private int pHour;
     private int pMinute;
@@ -77,6 +78,7 @@ public class TimePickerActivity extends Activity {
 	displayTime = (TextView) findViewById(R.id.timeDisplay);
 	pickTime = (Button) findViewById(R.id.pickTime);
 	setAlarm = (Button) findViewById(R.id.setAlarm);
+	stopAudioPlayback = (Button) findViewById(R.id.stopAudioPlayback);
 
 	/** Listener for click event of the button */
 	pickTime.setOnClickListener(new View.OnClickListener() {
@@ -93,6 +95,14 @@ public class TimePickerActivity extends Activity {
 		Log.d("TimePickerActivity", "setOnClickListener");
 		SheduleAlarm shedulealarm = new SheduleAlarm(getApplicationContext());
 		shedulealarm.setAlarm();
+	    }
+	});
+
+	stopAudioPlayback.setOnClickListener(new View.OnClickListener() {
+	    public void onClick(View v) {
+		 Log.d("TimePickerActivity", "stopAudioPlayback is onClicked");
+		Intent service = new Intent(TimePickerActivity.this, LocalWordService.class);
+		stopService(service);
 	    }
 	});
 
@@ -137,7 +147,7 @@ public class TimePickerActivity extends Activity {
 	pHour = prefs.getInt("hourvalue", 1);
 	pMinute = prefs.getInt("minutevalue", 1);
 	isalarmset = prefs.getBoolean("alarmenabled", false);
-	Log.d("TimePickerActivity", "getSavedTime - read alarm data: Alarm enabled :" + isalarmset + " hour: " + pHour + " minute: "
-		+ pMinute);
+	Log.d("TimePickerActivity", "getSavedTime - read alarm data: Alarm enabled :" + isalarmset + " hour: " + pHour
+		+ " minute: " + pMinute);
     }
 }
