@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.SystemClock;
 import android.util.Log;
 
 public class SheduleAlarm {
@@ -27,40 +28,29 @@ public class SheduleAlarm {
 	// readAlarmData(context);
 
 	if (alarmenabled) {
-	    Log.d("SheduleAlarm", "setAlarm - alarm is set");
-	    AlarmManager service = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+	    Log.d("SheduleAlarm", "setAlarm - alarm is set");	    
 	    Intent i = new Intent(context, MyStartServiceReceiver.class);
-	    PendingIntent pending = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
-	    Calendar cal = setTime();
-	    // fetch every 30 seconds
-	    // InexactRepeating allows Android to optimize the energy
-	    // consumption
-	    Log.d("SheduleAlarm", "setting alarm on:"+cal.getTime().toGMTString());
-	    service.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), REPEAT_TIME, pending);
+	    PendingIntent pintent = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
+	    AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+	    
+	    Calendar calendar = Calendar.getInstance();
+	    calendar.setTimeInMillis(System.currentTimeMillis());
+	    calendar.set(Calendar.HOUR_OF_DAY, alarmhour);
+	    calendar.set(Calendar.MINUTE, alarmminute);
+	    //calendar.set(Calendar.SECOND, 0);
+	   // calendar.set(Calendar.MILLISECOND, 0);
+	    Log.d("SheduleAlarm", "setting alarm on:"+calendar.getTimeInMillis());
+
+	    alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+	            AlarmManager.INTERVAL_DAY, pintent);
+	    
 	    Log.d("SheduleAlarm", "setAlarm activated");
 	} else {
 
 	    Log.d("SheduleAlarm", "setAlarm - alarm is not set");
 	}
     }
-
-    private Calendar setTime() {
-
-	Calendar cur_cal = new GregorianCalendar();
-	cur_cal.setTimeInMillis(System.currentTimeMillis());
-
-	Calendar cal = new GregorianCalendar();
-	cal.add(Calendar.DAY_OF_YEAR, cur_cal.get(Calendar.DAY_OF_YEAR));
-	cal.set(Calendar.DATE, cur_cal.get(Calendar.DATE));
-	cal.set(Calendar.MONTH, cur_cal.get(Calendar.MONTH));
-	cal.set(Calendar.HOUR_OF_DAY, alarmhour);
-	cal.set(Calendar.MINUTE, alarmminute);
-	cal.set(Calendar.SECOND, 0);
-	cal.set(Calendar.MILLISECOND, 0);
-	Log.d("SheduleAlarm", "setTime: " + cal.getTime().toGMTString());
-	return cal;
-    }
-
+    
     public SheduleAlarm(Context context) {
 	this.context = context;
 	SharedPreferences prefs = context.getSharedPreferences(ALARM_DATA, Context.MODE_PRIVATE);

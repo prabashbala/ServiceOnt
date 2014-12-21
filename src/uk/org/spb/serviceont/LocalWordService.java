@@ -1,11 +1,15 @@
 package uk.org.spb.serviceont;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 public class LocalWordService extends Service {
@@ -32,6 +36,26 @@ public class LocalWordService extends Service {
 	}
     }
 
+    @Override
+    public void onCreate(){
+
+	Log.d("LocalWordService","oncreate notification*************");
+       NotificationManager mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+       Intent intent1 = new Intent(this.getApplicationContext(), TimePickerActivity.class);
+       //PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent1, 0);
+       PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+
+       Notification mNotify = new NotificationCompat.Builder(this)
+               .setAutoCancel(true)
+               .setContentTitle("Playing Pirith Chanting audio")
+               .setContentText("Pirith Chanting app now playing pirith audio file")
+               .setSmallIcon(R.drawable.ic_stat_notify_msg)
+               .setContentIntent(pIntent)
+               .build();
+
+       mNM.notify(1, mNotify);
+       Log.d("LocalWordService","done oncreate notification*************");
+    }
     // play a song
     public void playSong() {
 	Log.d("LocalWordService","playSong*************");
