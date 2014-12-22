@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +20,6 @@ public class TimePickerActivity extends Activity {
     public static final String ALARM_DATA = "alarmdata";
     /** Private members of the class */
     private TextView displayTime;
-    private Button pickTime;
     private Button setAlarm;
 
     private int pHour;
@@ -75,11 +73,11 @@ public class TimePickerActivity extends Activity {
 
 	/** Capture our View elements */
 	displayTime = (TextView) findViewById(R.id.timeDisplay);
-	pickTime = (Button) findViewById(R.id.pickTime);
+	displayTime.layout(150, 150, 500, 150);
 	setAlarm = (Button) findViewById(R.id.setAlarm);
-
+	
 	/** Listener for click event of the button */
-	pickTime.setOnClickListener(new View.OnClickListener() {
+	displayTime.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
 		Log.d("TimePickerActivity:onCreate:onClick", "Showing time picker controll");
 		showDialog(TIME_DIALOG_ID);
