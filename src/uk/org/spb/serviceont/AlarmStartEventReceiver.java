@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-public class MyStartServiceReceiver extends BroadcastReceiver {
+public class AlarmStartEventReceiver extends BroadcastReceiver {
 
   @Override
   public void onReceive(Context context, Intent intent) {
-	  Log.d("MyStartServiceReceiver","OnReceive MyStartServiceReceiver");
-    Intent service = new Intent(context, LocalWordService.class);
+	  Log.d("AlarmStartEventReceiver:OnReceive","Alarm went off");
+    Intent service = new Intent(context, BackgroundMusicService.class);
     context.startService(service);
   }
 } 
