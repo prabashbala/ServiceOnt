@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-public class MyScheduleReceiver extends BroadcastReceiver {
+public class BootCompletedEventReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-	 Log.d("MyScheduleReceiver", "OnReceive alarm is set");
-	SheduleAlarm alarmset = new SheduleAlarm(context);
+	 Log.d("BootCompletedEventReceiver:OnReceive", "Boot completed event triggerd");
+	AlarmShedulerAction alarmset = new AlarmShedulerAction(context);
 	alarmset.setAlarm();
     }
 

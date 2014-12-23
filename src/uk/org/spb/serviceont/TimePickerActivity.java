@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,9 +20,7 @@ public class TimePickerActivity extends Activity {
     public static final String ALARM_DATA = "alarmdata";
     /** Private members of the class */
     private TextView displayTime;
-    private Button pickTime;
     private Button setAlarm;
-    private Button stopAudioPlayback;
 
     private int pHour;
     private int pMinute;
@@ -41,19 +38,19 @@ public class TimePickerActivity extends Activity {
 	    pMinute = minute;
 	    updateDisplay();
 	    displayToast();
-	    Log.d("TimePickerActivity", "setting alarm data");
+	    Log.d("TimePickerActivity:onTimeSet", "setting alarm data");
 	}
     };
 
     /** Updates the time in the TextView */
     private void updateDisplay() {
-	Log.d("TimePickerActivity", "updateDisplay");
+	Log.d("TimePickerActivity:updateDisplay", "updating display");
 	displayTime.setText(new StringBuilder().append(pad(pHour)).append(":").append(pad(pMinute)));
     }
 
     /** Displays a notification when the time is updated */
     private void displayToast() {
-	Log.d("TimePickerActivity", "displayToast");
+	Log.d("TimePickerActivity:displayToast", "displaying tost message");
 	Toast.makeText(this, new StringBuilder().append("Time choosen is ").append(displayTime.getText()),
 		Toast.LENGTH_SHORT).show();
 
@@ -76,13 +73,13 @@ public class TimePickerActivity extends Activity {
 
 	/** Capture our View elements */
 	displayTime = (TextView) findViewById(R.id.timeDisplay);
-	pickTime = (Button) findViewById(R.id.pickTime);
+	displayTime.layout(150, 150, 500, 150);
 	setAlarm = (Button) findViewById(R.id.setAlarm);
-	stopAudioPlayback = (Button) findViewById(R.id.stopAudioPlayback);
-
+	
 	/** Listener for click event of the button */
-	pickTime.setOnClickListener(new View.OnClickListener() {
+	displayTime.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
+		Log.d("TimePickerActivity:onCreate:onClick", "Showing time picker controll");
 		showDialog(TIME_DIALOG_ID);
 	    }
 	});
@@ -90,26 +87,20 @@ public class TimePickerActivity extends Activity {
 	/** Listener for click event of the button */
 	setAlarm.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
-		Log.d("TimePickerActivity", "setting alarm data");
+		Log.d("TimePickerActivity:onCreate:setOnClickListener", "setting alarm data");
 		saveTime(pHour, pMinute);
 		Log.d("TimePickerActivity", "setOnClickListener");
-		SheduleAlarm shedulealarm = new SheduleAlarm(getApplicationContext());
+		AlarmShedulerAction shedulealarm = new AlarmShedulerAction(getApplicationContext());
 		shedulealarm.setAlarm();
-	    }
-	});
-
-	stopAudioPlayback.setOnClickListener(new View.OnClickListener() {
-	    public void onClick(View v) {
-		 Log.d("TimePickerActivity", "stopAudioPlayback is onClicked");
-		Intent service = new Intent(TimePickerActivity.this, LocalWordService.class);
-		stopService(service);
 	    }
 	});
 
 	if (isalarmset) {
 	    /** Get the current time */
+	    Log.d("TimePickerActivity:onCreate:isalarmset", "Previous alarm data could not be found");
 	} else {
 	    /** Get the current time */
+	    Log.d("TimePickerActivity:onCreate:isalarmset", "Previous alarm data found");
 	    final Calendar cal = Calendar.getInstance();
 	    pHour = cal.get(Calendar.HOUR_OF_DAY);
 	    pMinute = cal.get(Calendar.MINUTE);
@@ -123,6 +114,7 @@ public class TimePickerActivity extends Activity {
 
     @Override
     protected Dialog onCreateDialog(int id) {
+	Log.d("TimePickerActivity:onCreateDialog", "Creating new dialog for time picker");
 	switch (id) {
 	case TIME_DIALOG_ID:
 	    return new TimePickerDialog(this, mTimeSetListener, pHour, pMinute, false);
@@ -138,7 +130,7 @@ public class TimePickerActivity extends Activity {
 	editor.putBoolean("alarmenabled", true);
 	// Commit the edits!
 	editor.commit();
-	Log.d("TimePickerActivity", "saveTime - alarm data commited");
+	Log.d("TimePickerActivity:saveTime", "Alarm data commited");
     }
 
     private void getSavedTime() {
@@ -147,7 +139,7 @@ public class TimePickerActivity extends Activity {
 	pHour = prefs.getInt("hourvalue", 1);
 	pMinute = prefs.getInt("minutevalue", 1);
 	isalarmset = prefs.getBoolean("alarmenabled", false);
-	Log.d("TimePickerActivity", "getSavedTime - read alarm data: Alarm enabled :" + isalarmset + " hour: " + pHour
+	Log.d("TimePickerActivity:getSavedTime", "Read alarm data: Alarm enabled :" + isalarmset + " hour: " + pHour
 		+ " minute: " + pMinute);
     }
 }
