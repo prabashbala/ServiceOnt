@@ -25,18 +25,18 @@
         </activity>
         
          <service
-            android:name=".BackgroundMusicService"
+            android:name=".LocalWordService"
             android:icon="@drawable/ic_launcher"
             android:label="@string/service_name" >
         </service>
         
-        <receiver android:name="BootCompletedEventReceiver" >
+        <receiver android:name="MyScheduleReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
         
-        <receiver android:name=".AlarmStartEventReceiver" >
+        <receiver android:name=".MyStartServiceReceiver" >
         </receiver>
         
     </application>

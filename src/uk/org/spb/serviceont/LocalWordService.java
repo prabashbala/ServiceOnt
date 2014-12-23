@@ -12,9 +12,10 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-public class BackgroundMusicService extends Service {
+public class LocalWordService extends Service {
     private final IBinder mBinder = new MyBinder();
     // media player
     private MediaPlayer player;
@@ -23,7 +24,7 @@ public class BackgroundMusicService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-	Log.d("BackgroundMusicService:onStartCommand","Playing audio file");
+	Log.d("LocalWordService","onStartCommand*************");
 	playSong();
 	
 	return Service.START_STICKY;
@@ -35,24 +36,39 @@ public class BackgroundMusicService extends Service {
     }
 
     public class MyBinder extends Binder {
-	BackgroundMusicService getService() {
-	    return BackgroundMusicService.this;
+	LocalWordService getService() {
+	    return LocalWordService.this;
 	}
     }
 
     @Override
     public void onCreate(){
 
-	Log.d("BackgroundMusicService:oncreate","Initialize BackgroundMusicService notification");
-      
+	Log.d("LocalWordService","oncreate notification*************");
+       /*NotificationManager mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+       Intent intent1 = new Intent(this.getApplicationContext(), LocalWordService.class);
+       //PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent1, 0);
+       PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+         Notification mNotify = new NotificationCompat.Builder(this)
+               .setAutoCancel(true)
+               .setContentTitle("Playing Pirith Chanting audio")
+               .setContentText("Pirith Chanting app now playing pirith audio file")
+               .setSmallIcon(R.drawable.ic_stat_notify_msg)
+               //.setContentIntent(pIntent)
+               .setDeleteIntent(pIntent)
+               .build();
+
+       mNM.notify(1, mNotify);
+       Log.d("LocalWordService","done oncreate notification*************");
+       */
        final BroadcastReceiver receiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 		    // TODO Auto-generated method stub
-		    Log.d("BroadcastReceiver:onReceive","innerclass");
+		    Log.d("BroadcastReceiver","innerclass");
 		   if(player.isPlaying()){
-		       Log.d("BroadcastReceiver:onReceive","innerclass stoping player");
+		       Log.d("BroadcastReceiver","innerclass stoping player");
 		       player.stop();
 		   }
 	            unregisterReceiver(this);
@@ -64,24 +80,24 @@ public class BackgroundMusicService extends Service {
 	        registerReceiver(receiver, new IntentFilter(NOTIFICATION_DELETED_ACTION));
 	        Notification n = new Notification.Builder(this)
 	        	 .setAutoCancel(true)
-	                 .setContentTitle("Piritha Chanting Scheduler")
-	                 .setContentText("Now playing pirith")
+	                 .setContentTitle("Playing Pirith Chanting audio")
+	                 .setContentText("Pirith Chanting app now playing pirith audio file")
 	                 .setDeleteIntent(pendintIntent)
 	                 .setSmallIcon(R.drawable.ic_stat_notify_msg)
 	         . build();
 	        mNM.notify(0, n);
-	        Log.d("BackgroundMusicService:oncreate","Notification set");
+	        Log.d("LocalWordService","notification set");
      
     }
     // play a song
     public void playSong() {
-	Log.d("BackgroundMusicService:playSong","playing audio file");
+	Log.d("LocalWordService","playSong*************");
 	// play
 	if(player!=null){
-	    Log.d("BackgroundMusicService:playSong","player is not null");
+	    Log.d("LocalWordService","player is not null");
 	    player.reset();
 	}else{
-	    Log.d("BackgroundMusicService:playSong","player is null");
+	    Log.d("LocalWordService","player is null");
 	    player= new MediaPlayer();
 	}
 	// set the data source
@@ -90,9 +106,9 @@ public class BackgroundMusicService extends Service {
 	    player.setDataSource(mp3file.getFileDescriptor(),mp3file.getStartOffset(),mp3file.getLength());
 	    player.prepare();
 	    player.start();
-	    Log.d("BackgroundMusicService:playSong","media manager activity started");
+	    Log.d("LocalWordService","playSong comleted*************");
 	} catch (Exception e) {
-	    Log.e("BackgroundMusicService:playSong", "Error starting the media manager", e);
+	    Log.e("LocalWordService", "Error setting data source", e);
 	}
     }
 
