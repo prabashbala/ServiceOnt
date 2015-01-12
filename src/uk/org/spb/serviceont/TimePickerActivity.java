@@ -1,9 +1,12 @@
 package uk.org.spb.serviceont;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import uk.org.spb.serviceont.util.ObjectSerializer;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -13,12 +16,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 public class TimePickerActivity extends Activity {
 
@@ -31,8 +31,8 @@ public class TimePickerActivity extends Activity {
     private int pHour;
     private int pMinute;
     private boolean isalarmset = false;
-    
-    private List<AlarmData> alarmdata = new ArrayList<AlarmData>();
+
+    private ArrayList<AlarmData> alarmdata = new ArrayList<AlarmData>();
     /**
      * This integer will uniquely define the dialog to be used for displaying
      * time picker.
@@ -41,28 +41,44 @@ public class TimePickerActivity extends Activity {
 
     /** Callback received when the user "picks" a time in the dialog */
     private TimePickerDialog.OnTimeSetListener mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+	int callCount = 0;
+
 	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-	    pHour = hourOfDay;
-	    pMinute = minute;
-	    alarmdata.add(new AlarmData(pHour,pMinute));
-	    updateDisplay();
-	    displayToast();
-	    Log.d("TimePickerActivity:onTimeSet", "setting alarm data");
+
+	    if (callCount == 1) // On second call -work around of a bug
+	    {
+		pHour = hourOfDay;
+		pMinute = minute;
+		alarmdata.add(new AlarmData(pHour, pMinute));
+		saveTimeList(alarmdata);
+		updateDisplay();
+		displayToast();
+		Log.d("TimePickerActivity:onTimeSet", "setting alarm data");
+	    }
+	    callCount++; // Incrementing call coun
 	}
+
     };
 
     /** Updates the time in the TextView */
     private void updateDisplay() {
 	Log.d("TimePickerActivity:updateDisplay", "updating display");
-	//displayTime.setText(new StringBuilder().append(pad(pHour)).append(":").append(pad(pMinute)));
+	if (listview != null) {
+	    ArrayList<AlarmData> alarmdata = getSavedTimeList();
+	    ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.rowlayout, R.id.label, alarmdata);
+	    listview.setAdapter(adapter);
+	    Log.d("TimePickerActivity:updateDisplay", "display updated");
+	}
     }
 
     /** Displays a notification when the time is updated */
     private void displayToast() {
 	Log.d("TimePickerActivity:displayToast", "displaying tost message");
-	/*Toast.makeText(this, new StringBuilder().append("Time choosen is ").append(displayTime.getText()),
-		Toast.LENGTH_SHORT).show();
-*/
+	/*
+	 * Toast.makeText(this, new
+	 * StringBuilder().append("Time choosen is ").append
+	 * (displayTime.getText()), Toast.LENGTH_SHORT).show();
+	 */
     }
 
     /** Add padding to numbers less than ten */
@@ -78,33 +94,26 @@ public class TimePickerActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.activity_main);
-	getSavedTime();
+	// getSavedTime();
 
 	/** Capture our View elements */
 	displayTime = (ImageView) findViewById(R.id.alarm_add_alarm);
 	displayTime.layout(150, 150, 500, 150);
-	//setAlarm = (ImageView) findViewById(R.id.action_icon);
-	getSavedTime();
+	// setAlarm = (ImageView) findViewById(R.id.action_icon);
+	// getSavedTime();
 	listview = (ListView) findViewById(R.id.alarms_list);
-	String[] values = new String[] { pHour+":"+pMinute, 
-                "Elemento 2",
-                "Elemento 3",
-                "Elemento 4", 
-                "Elemento 5", 
-                "Elemento 6", 
-                "Elemento 7", 
-                "Elemento 8" 
-               };
-	final ArrayList<String> list = new ArrayList<String>();
-	    for (int i = 0; i < values.length; ++i) {
-	      list.add(values[i]);
-	    }
-	    
-	ArrayAdapter<String> adapter = new ArrayAdapter(this,
-	          R.layout.rowlayout,R.id.label, list);
-	listview.setAdapter(adapter); 
-	
-	
+
+	ArrayList<AlarmData> alarmdata = getSavedTimeList();
+	/*
+	 * String[] values = new String[] { pHour + ":" + pMinute, "Elemento 2",
+	 * "Elemento 3", "Elemento 4", "Elemento 5", "Elemento 6", "Elemento 7",
+	 * "Elemento 8" }; final ArrayList<String> list = new
+	 * ArrayList<String>(); for (int i = 0; i < values.length; ++i) {
+	 * list.add(values[i]); }
+	 */
+	ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.rowlayout, R.id.label, alarmdata);
+	listview.setAdapter(adapter);
+
 	/** Listener for click event of the button */
 	displayTime.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
@@ -114,16 +123,16 @@ public class TimePickerActivity extends Activity {
 	});
 
 	/** Listener for click event of the button */
-	/*setAlarm.setOnClickListener(new View.OnClickListener() {
-	    public void onClick(View v) {
-		Log.d("TimePickerActivity:onCreate:setOnClickListener", "setting alarm data");
-		saveTime(pHour, pMinute);
-		Log.d("TimePickerActivity", "setOnClickListener");
-		AlarmShedulerAction shedulealarm = new AlarmShedulerAction(getApplicationContext());
-		shedulealarm.setAlarm();
-	    }
-	});
-*/
+	/*
+	 * setAlarm.setOnClickListener(new View.OnClickListener() { public void
+	 * onClick(View v) {
+	 * Log.d("TimePickerActivity:onCreate:setOnClickListener",
+	 * "setting alarm data"); saveTime(pHour, pMinute);
+	 * Log.d("TimePickerActivity", "setOnClickListener");
+	 * AlarmShedulerAction shedulealarm = new
+	 * AlarmShedulerAction(getApplicationContext());
+	 * shedulealarm.setAlarm(); } });
+	 */
 	if (isalarmset) {
 	    /** Get the current time */
 	    Log.d("TimePickerActivity:onCreate:isalarmset", "Previous alarm data could not be found");
@@ -162,6 +171,19 @@ public class TimePickerActivity extends Activity {
 	Log.d("TimePickerActivity:saveTime", "Alarm data commited");
     }
 
+    private void saveTimeList(ArrayList<AlarmData> alarmdata) {
+	SharedPreferences settings = getSharedPreferences(ALARM_DATA, 0);
+	SharedPreferences.Editor editor = settings.edit();
+	try {
+	    editor.putString("alarmobject", ObjectSerializer.serialize(alarmdata));
+	    editor.commit();
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	Log.d("TimePickerActivity:saveTime", "Alarm data commited");
+    }
+
     private void getSavedTime() {
 
 	SharedPreferences prefs = getSharedPreferences(ALARM_DATA, Context.MODE_PRIVATE);
@@ -171,36 +193,61 @@ public class TimePickerActivity extends Activity {
 	Log.d("TimePickerActivity:getSavedTime", "Read alarm data: Alarm enabled :" + isalarmset + " hour: " + pHour
 		+ " minute: " + pMinute);
     }
-    
-    class AlarmData{
-	
+
+    private ArrayList<AlarmData> getSavedTimeList() {
+	// Retrieve the values
+	SharedPreferences prefs = getSharedPreferences(ALARM_DATA, Context.MODE_PRIVATE);
+	try {
+	    return (ArrayList<AlarmData>) ObjectSerializer.deserialize(prefs.getString("alarmobject",
+		    ObjectSerializer.serialize(new ArrayList<AlarmData>())));
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+	return null;
+
+    }
+
+    class AlarmData implements Serializable {
+
 	private String id;
 	private int iHour;
 	private int iMinute;
-	
+
 	public AlarmData(int iHour, int iMinute) {
 	    super();
 	    this.iHour = iHour;
 	    this.iMinute = iMinute;
 	}
+
 	public String getId() {
 	    return id;
 	}
+
 	public void setId(String id) {
 	    this.id = id;
 	}
+
 	public int getiHour() {
 	    return iHour;
 	}
+
 	public void setiHour(int iHour) {
 	    this.iHour = iHour;
 	}
+
 	public int getiMinute() {
 	    return iMinute;
 	}
+
 	public void setiMinute(int iMinute) {
 	    this.iMinute = iMinute;
 	}
-	
+
+	@Override
+	public String toString() {
+	    // TODO Auto-generated method stub
+	    return iHour + ":" + iMinute;
+	}
+
     }
 }
