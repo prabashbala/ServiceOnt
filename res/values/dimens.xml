@@ -3,5 +3,12 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="no_alarms_font_size">36sp</dimen>
+    <dimen name="alarm_undo_bar_horizontal_margin">8dp</dimen>
+     <dimen name="footer_button_size">56dip</dimen>
+     <dimen name="footer_button_layout_margin">16dip</dimen>
+     <dimen name="toast_bar_bottom_margin_in_conversation">24dip</dimen>
+     <dimen name="button_font_size">24sp</dimen>
+     <dimen name="body_font_size">18sp</dimen>
 
 </resources>
