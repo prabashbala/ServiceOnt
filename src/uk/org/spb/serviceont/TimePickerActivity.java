@@ -1,11 +1,10 @@
 package uk.org.spb.serviceont;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
+import uk.org.spb.serviceont.data.AlarmData;
 import uk.org.spb.serviceont.util.ObjectSerializer;
 import android.app.Activity;
 import android.app.Dialog;
@@ -39,32 +38,16 @@ public class TimePickerActivity extends Activity {
      */
     static final int TIME_DIALOG_ID = 0;
 
-    /** Callback received when the user "picks" a time in the dialog */
-    private TimePickerDialog.OnTimeSetListener mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
-	int callCount = 0;
-
-	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-	    if (callCount == 1) // On second call -work around of a bug
-	    {
-		pHour = hourOfDay;
-		pMinute = minute;
-		alarmdata.add(new AlarmData(pHour, pMinute));
-		saveTimeList(alarmdata);
-		updateDisplay();
-		displayToast();
-		Log.d("TimePickerActivity:onTimeSet", "setting alarm data");
-	    }
-	    callCount++; // Incrementing call coun
-	}
-
-    };
-
     /** Updates the time in the TextView */
     private void updateDisplay() {
 	Log.d("TimePickerActivity:updateDisplay", "updating display");
 	if (listview != null) {
-	    ArrayList<AlarmData> alarmdata = getSavedTimeList();
+	    try {
+		alarmdata = getSavedTimeList();
+	    } catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
 	    ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.rowlayout, R.id.label, alarmdata);
 	    listview.setAdapter(adapter);
 	    Log.d("TimePickerActivity:updateDisplay", "display updated");
@@ -74,11 +57,6 @@ public class TimePickerActivity extends Activity {
     /** Displays a notification when the time is updated */
     private void displayToast() {
 	Log.d("TimePickerActivity:displayToast", "displaying tost message");
-	/*
-	 * Toast.makeText(this, new
-	 * StringBuilder().append("Time choosen is ").append
-	 * (displayTime.getText()), Toast.LENGTH_SHORT).show();
-	 */
     }
 
     /** Add padding to numbers less than ten */
@@ -94,23 +72,16 @@ public class TimePickerActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.activity_main);
-	// getSavedTime();
-
-	/** Capture our View elements */
 	displayTime = (ImageView) findViewById(R.id.alarm_add_alarm);
 	displayTime.layout(150, 150, 500, 150);
-	// setAlarm = (ImageView) findViewById(R.id.action_icon);
-	// getSavedTime();
 	listview = (ListView) findViewById(R.id.alarms_list);
 
-	ArrayList<AlarmData> alarmdata = getSavedTimeList();
-	/*
-	 * String[] values = new String[] { pHour + ":" + pMinute, "Elemento 2",
-	 * "Elemento 3", "Elemento 4", "Elemento 5", "Elemento 6", "Elemento 7",
-	 * "Elemento 8" }; final ArrayList<String> list = new
-	 * ArrayList<String>(); for (int i = 0; i < values.length; ++i) {
-	 * list.add(values[i]); }
-	 */
+	try {
+	    alarmdata = getSavedTimeList();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
+
 	ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.rowlayout, R.id.label, alarmdata);
 	listview.setAdapter(adapter);
 
@@ -122,29 +93,14 @@ public class TimePickerActivity extends Activity {
 	    }
 	});
 
-	/** Listener for click event of the button */
-	/*
-	 * setAlarm.setOnClickListener(new View.OnClickListener() { public void
-	 * onClick(View v) {
-	 * Log.d("TimePickerActivity:onCreate:setOnClickListener",
-	 * "setting alarm data"); saveTime(pHour, pMinute);
-	 * Log.d("TimePickerActivity", "setOnClickListener");
-	 * AlarmShedulerAction shedulealarm = new
-	 * AlarmShedulerAction(getApplicationContext());
-	 * shedulealarm.setAlarm(); } });
-	 */
 	if (isalarmset) {
-	    /** Get the current time */
 	    Log.d("TimePickerActivity:onCreate:isalarmset", "Previous alarm data could not be found");
 	} else {
-	    /** Get the current time */
 	    Log.d("TimePickerActivity:onCreate:isalarmset", "Previous alarm data found");
 	    final Calendar cal = Calendar.getInstance();
 	    pHour = cal.get(Calendar.HOUR_OF_DAY);
 	    pMinute = cal.get(Calendar.MINUTE);
 	}
-
-	/** Display the current time in the TextView */
 	updateDisplay();
     }
 
@@ -155,20 +111,28 @@ public class TimePickerActivity extends Activity {
 	Log.d("TimePickerActivity:onCreateDialog", "Creating new dialog for time picker");
 	switch (id) {
 	case TIME_DIALOG_ID:
-	    return new TimePickerDialog(this, mTimeSetListener, pHour, pMinute, false);
+	    return new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+		//int callCount = 0;
+
+		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+		    if (view.isShown()) { // On second call -work around of a
+					  // bug
+			pHour = hourOfDay;
+			pMinute = minute;
+			alarmdata.add(new AlarmData(pHour, pMinute));
+			saveTimeList(alarmdata);
+			updateDisplay();
+			displayToast();
+			Log.d("TimePickerActivity:onTimeSet", "setting alarm data");
+			// callCount=0;
+		    }
+		    // callCount++; // Incrementing call coun
+		}
+
+	    }, pHour, pMinute, false);
 	}
 	return null;
-    }
-
-    private void saveTime(int hour, int minute) {
-	SharedPreferences settings = getSharedPreferences(ALARM_DATA, 0);
-	SharedPreferences.Editor editor = settings.edit();
-	editor.putInt("hourvalue", hour);
-	editor.putInt("minutevalue", minute);
-	editor.putBoolean("alarmenabled", true);
-	// Commit the edits!
-	editor.commit();
-	Log.d("TimePickerActivity:saveTime", "Alarm data commited");
     }
 
     private void saveTimeList(ArrayList<AlarmData> alarmdata) {
@@ -178,76 +142,15 @@ public class TimePickerActivity extends Activity {
 	    editor.putString("alarmobject", ObjectSerializer.serialize(alarmdata));
 	    editor.commit();
 	} catch (IOException e) {
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
 	Log.d("TimePickerActivity:saveTime", "Alarm data commited");
     }
 
-    private void getSavedTime() {
-
+    private ArrayList<AlarmData> getSavedTimeList() throws IOException {
 	SharedPreferences prefs = getSharedPreferences(ALARM_DATA, Context.MODE_PRIVATE);
-	pHour = prefs.getInt("hourvalue", 1);
-	pMinute = prefs.getInt("minutevalue", 1);
-	isalarmset = prefs.getBoolean("alarmenabled", false);
-	Log.d("TimePickerActivity:getSavedTime", "Read alarm data: Alarm enabled :" + isalarmset + " hour: " + pHour
-		+ " minute: " + pMinute);
+	return (ArrayList<AlarmData>) ObjectSerializer.deserialize(prefs.getString("alarmobject",
+		ObjectSerializer.serialize(new ArrayList<AlarmData>())));
     }
 
-    private ArrayList<AlarmData> getSavedTimeList() {
-	// Retrieve the values
-	SharedPreferences prefs = getSharedPreferences(ALARM_DATA, Context.MODE_PRIVATE);
-	try {
-	    return (ArrayList<AlarmData>) ObjectSerializer.deserialize(prefs.getString("alarmobject",
-		    ObjectSerializer.serialize(new ArrayList<AlarmData>())));
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
-	return null;
-
-    }
-
-    class AlarmData implements Serializable {
-
-	private String id;
-	private int iHour;
-	private int iMinute;
-
-	public AlarmData(int iHour, int iMinute) {
-	    super();
-	    this.iHour = iHour;
-	    this.iMinute = iMinute;
-	}
-
-	public String getId() {
-	    return id;
-	}
-
-	public void setId(String id) {
-	    this.id = id;
-	}
-
-	public int getiHour() {
-	    return iHour;
-	}
-
-	public void setiHour(int iHour) {
-	    this.iHour = iHour;
-	}
-
-	public int getiMinute() {
-	    return iMinute;
-	}
-
-	public void setiMinute(int iMinute) {
-	    this.iMinute = iMinute;
-	}
-
-	@Override
-	public String toString() {
-	    // TODO Auto-generated method stub
-	    return iHour + ":" + iMinute;
-	}
-
-    }
 }
