@@ -5,21 +5,22 @@ import java.io.Serializable;
 public class AlarmData implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private String id;
+    private Long id;
     private int iHour;
     private int iMinute;
 
-    public AlarmData(int iHour, int iMinute) {
+    public AlarmData(Long id ,int iHour, int iMinute) {
 	super();
+	this.id=id;
 	this.iHour = iHour;
 	this.iMinute = iMinute;
     }
 
-    public String getId() {
+    public Long getId() {
 	return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
 	this.id = id;
     }
 
@@ -43,6 +44,12 @@ public class AlarmData implements Serializable {
     public String toString() {
 	// TODO Auto-generated method stub
 	return iHour + ":" + iMinute;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        // TODO Auto-generated method stub
+        return ((AlarmData)o).getId().equals(this.getId());
     }
 
 }

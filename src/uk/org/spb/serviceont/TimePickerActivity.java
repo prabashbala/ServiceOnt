@@ -2,6 +2,7 @@ package uk.org.spb.serviceont;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import uk.org.spb.serviceont.data.AlarmData;
 import uk.org.spb.serviceont.util.ObjectSerializer;
@@ -14,6 +15,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -25,42 +27,16 @@ public class TimePickerActivity extends Activity {
     /** Private members of the class */
     private ImageView displayTime;
     private ListView listview;
-    ArrayAdapter<AlarmData> adapter =null;
 
     private int pHour;
     private int pMinute;
 
-    private ArrayList<AlarmData> alarmdata = new ArrayList<AlarmData>();
     /**
      * This integer will uniquely define the dialog to be used for displaying
      * time picker.
      */
     static final int TIME_DIALOG_ID = 0;
-
-    /** Updates the time in the TextView */
-    private void updateDisplay() {
-	Log.d("TimePickerActivity:updateDisplay", "updating display");
-	try {
-	    alarmdata = getSavedTimeList();
-	    adapter.clear();
-	    adapter.addAll(alarmdata);
-	    //final ArrayAdapter<AlarmData> adapter = new ArrayAdapter(this, R.layout.rowlayout, R.id.label, alarmdata);
-	    listview.setAdapter(adapter);
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	Log.d("TimePickerActivity:updateDisplay", "display updated");
-    }
-
-    /** Add padding to numbers less than ten */
-    private static String pad(int c) {
-	if (c >= 10)
-	    return String.valueOf(c);
-	else
-	    return "0" + String.valueOf(c);
-    }
-
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,13 +44,10 @@ public class TimePickerActivity extends Activity {
 	setContentView(R.layout.activity_main);
 	listview = (ListView) findViewById(R.id.alarms_list);
 	displayTime = (ImageView) findViewById(R.id.alarm_add_alarm);
+	ArrayList<AlarmData> ialarmdata = null;
+	ialarmdata = getSavedTimeList();
+	Log.d("TimePickerActivity:onCreate:onClick", "alarmdata udated: " + ialarmdata.size());
 
-	try {
-	    alarmdata = getSavedTimeList();
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
 	/** Listener for click event of the button */
 	displayTime.setOnClickListener(new View.OnClickListener() {
 	    public void onClick(View v) {
@@ -83,32 +56,37 @@ public class TimePickerActivity extends Activity {
 	    }
 	});
 
-	//final ArrayAdapter<AlarmData> adapter = new ArrayAdapter(this, R.layout.rowlayout, R.id.label, alarmdata);
-	adapter = new ArrayAdapter<AlarmData>(this, R.layout.rowlayout, R.id.label, alarmdata);
+	
+	final ArrayAdapter<AlarmData> adapter = new ArrayAdapter<AlarmData>(this, R.layout.rowlayout, R.id.label,
+		ialarmdata);
+	Log.d("SwipeDismissListViewTouchListener:", "alarmdata:" + ialarmdata + " Adaptor:" + adapter.getCount());
 	listview.setAdapter(adapter);
 	SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(listview,
 		new SwipeDismissListViewTouchListener.DismissCallbacks() {
+		    ArrayAdapter iadapter = (ArrayAdapter) listview.getAdapter();
+		    ArrayList<AlarmData> ialarmdata = getSavedTimeList();
+
 		    public void onDismiss(ListView listView, int[] reverseSortedPositions) {
 			Log.d("SwipeDismissListViewTouchListener:touchListener", "onDismiss");
 			for (int position : reverseSortedPositions) {
-
-			    AlarmData almdta = adapter.getItem(position);
-			    alarmdata.remove(almdta);
-			    saveTimeList(alarmdata);
-			    adapter.clear();
-			    adapter.addAll(alarmdata);
-			   // adapter.remove(almdta);
-			    Log.d("SwipeDismissListViewTouchListener:touchListener", "position:" + position + " Alarm:"
-				    + almdta);
+			    AlarmData aldt =(AlarmData) iadapter.getItem(position);
+			    Log.d("SwipeDismissListView:TouchListener: before removing","alarm: "+aldt +" from alarmdata size: "+ialarmdata.size());
+			    iadapter.remove(aldt);
+			    ialarmdata.remove(aldt);
+			    saveTimeList(ialarmdata);
+			    iadapter.notifyDataSetChanged();
+			    Log.d("SwipeDismissListView:TouchListener: removing","alarm: "+aldt +" from alarmdata size: "+ialarmdata.size());
 			}
-			adapter.notifyDataSetChanged();
+			Log.d("SwipeDismissListView:TouchListener: updating view: ", "alarmdata: " + ialarmdata + " Adaptor: " + adapter.getCount());
 		    }
 
 		    @Override
 		    public boolean canDismiss(int position) {
 			// TODO Auto-generated method stub
-			Log.d("SwipeDismissListViewTouchListener:touchListener", "canDismiss position" + position+" Adapter Count"+adapter.getCount());
+			Log.d("SwipeDismissListViewTouchListener:touchListener", "canDismiss position: " + position
+				+ " Adapter Count" + adapter.getCount());
 			return position <= adapter.getCount() - 1;
+			// return true;
 		    }
 		});
 	listview.setOnTouchListener(touchListener);
@@ -131,13 +109,16 @@ public class TimePickerActivity extends Activity {
 					  // bug
 			pHour = hourOfDay;
 			pMinute = minute;
-			alarmdata.add(new AlarmData(pHour, pMinute));
-			saveTimeList(alarmdata);
-			updateDisplay();
+			ArrayList<AlarmData> ialarmdata = getSavedTimeList();
+			ArrayAdapter iadapter = (ArrayAdapter) listview.getAdapter();
+			Log.d("TimePickerActivity:onTimeSet", "alarmdata:" + ialarmdata.size());
+			AlarmData ialdt=new AlarmData(new Date().getTime(),hourOfDay, minute);
+			ialarmdata.add(ialdt);
+			iadapter.add(ialdt);
+			saveTimeList(ialarmdata);
+			iadapter.notifyDataSetChanged();
 			Log.d("TimePickerActivity:onTimeSet", "setting alarm data");
-			// callCount=0;
 		    }
-		    // callCount++; // Incrementing call coun
 		}
 
 	    }, pHour, pMinute, false);
@@ -145,22 +126,30 @@ public class TimePickerActivity extends Activity {
 	return null;
     }
 
-    private void saveTimeList(ArrayList<AlarmData> alarmdata) {
-	SharedPreferences settings = getSharedPreferences(ALARM_DATA, 0);
+    private void saveTimeList(ArrayList<AlarmData> aldta) {
+	SharedPreferences settings = getSharedPreferences(ALARM_DATA,Context.MODE_PRIVATE);
 	SharedPreferences.Editor editor = settings.edit();
 	try {
-	    editor.putString("alarmobject", ObjectSerializer.serialize(alarmdata));
+	    Log.d("TimePickerActivity:saveTime", "Saving Alarm data size: "+aldta.size()+" Items: "+aldta);
+	    editor.putString("alarmobject", ObjectSerializer.serialize(aldta));
 	    editor.commit();
 	} catch (IOException e) {
-	    e.printStackTrace();
+	    Log.e("TimePickerActivity:saveTime", "Error occured while saving alarm data:"+e.getMessage());
 	}
-	Log.d("TimePickerActivity:saveTime", "Alarm data commited");
+	
     }
 
-    private ArrayList<AlarmData> getSavedTimeList() throws IOException {
+    private ArrayList<AlarmData> getSavedTimeList() {
 	SharedPreferences prefs = getSharedPreferences(ALARM_DATA, Context.MODE_PRIVATE);
-	return (ArrayList<AlarmData>) ObjectSerializer.deserialize(prefs.getString("alarmobject",
-		ObjectSerializer.serialize(new ArrayList<AlarmData>())));
+	ArrayList<AlarmData> alarmlist=null;
+	try {
+	    Log.d("TimePickerActivity:saveTime", "Reading Alarm data");
+	    alarmlist = (ArrayList<AlarmData>) ObjectSerializer.deserialize(prefs.getString("alarmobject",
+		    ObjectSerializer.serialize(new ArrayList<AlarmData>())));
+	} catch (IOException e) {
+	    Log.e("TimePickerActivity:saveTime", "Error occured while reading alarm data:"+e.getMessage());
+	}
+	return alarmlist;
     }
 
 }
