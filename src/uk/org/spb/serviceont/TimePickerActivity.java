@@ -44,8 +44,7 @@ public class TimePickerActivity extends Activity {
 	setContentView(R.layout.activity_main);
 	listview = (ListView) findViewById(R.id.alarms_list);
 	displayTime = (ImageView) findViewById(R.id.alarm_add_alarm);
-	ArrayList<AlarmData> ialarmdata = null;
-	ialarmdata = getSavedTimeList();
+	ArrayList<AlarmData> ialarmdata = getSavedTimeList();
 	Log.d("TimePickerActivity:onCreate:onClick", "alarmdata udated: " + ialarmdata.size());
 
 	/** Listener for click event of the button */
@@ -65,7 +64,7 @@ public class TimePickerActivity extends Activity {
 		    
 
 		    public void onDismiss(ListView listView, int[] reverseSortedPositions) {
-			Log.d("SwipeDismissListViewTouchListener:touchListener", "onDismiss");
+			Log.d("SwipeDismissListViewTouchListener:touchListener:", "onDismiss");
 			for (int position : reverseSortedPositions) {
 			    adjustAlarmData(true, (AlarmData)((ArrayAdapter) listview.getAdapter()).getItem(position));
 			    Log.d("SwipeDismissListView:TouchListener: removing", "alarm position: "+position);
@@ -101,7 +100,7 @@ public class TimePickerActivity extends Activity {
 			pHour = hourOfDay;
 			pMinute = minute;
 			adjustAlarmData(false, new AlarmData(new Date().getTime(), hourOfDay, minute));
-			Log.d("TimePickerActivity:onTimeSet", "setting alarm data");
+			Log.d("TimePickerActivity:TimePickerDialog:onTimeSet", "setting alarm data");
 		    }
 		}
 
@@ -109,24 +108,34 @@ public class TimePickerActivity extends Activity {
 	}
 	return null;
     }
-
-    private void adjustAlarmData(boolean isRemoval, AlarmData aldt) {
+/**
+ * 
+ * @param isRemoval if it is to remove alarm time pass true. else false.
+ * @param AlarmData : alarm data to be added or removed
+ */
+    private void adjustAlarmData(boolean isRemoval, AlarmData alarmdata) {
+	Log.d("SwipeDismissListView:adjustAlarmData:"," fuction is Removal: "+isRemoval);
 	ArrayAdapter iadapter = (ArrayAdapter) listview.getAdapter();
 	ArrayList<AlarmData> ialarmdata = getSavedTimeList();
 	if (isRemoval) {
-	    iadapter.remove(aldt);
-	    ialarmdata.remove(aldt);
-	    Log.d("SwipeDismissListView:TouchListener: before removing", "alarm: " + aldt + " from alarmdata size: "
+	    iadapter.remove(alarmdata);
+	    ialarmdata.remove(alarmdata);
+	    Log.d("SwipeDismissListView:adjustAlarmData: Remove", "Alarm: " + alarmdata + " from alarmdata size: "
 		    + ialarmdata.size());
 	} else {
-	    ialarmdata.add(aldt);
-	    iadapter.add(aldt);
-	    Log.d("TimePickerActivity:onTimeSet", "Updated alarmdata:" + ialarmdata.size());
+	    ialarmdata.add(alarmdata);
+	    iadapter.add(alarmdata);
+	    Log.d("TimePickerActivity:adjustAlarmData: Add", "Alarm:" + ialarmdata.size());
 	}
+	
 	saveTimeList(ialarmdata);
 	iadapter.notifyDataSetChanged();
+	trigerAlarmScheduler();
     }
-
+/**
+ * Save alarm selection data to Shared preference
+ * @param aldta
+ */
     private void saveTimeList(ArrayList<AlarmData> aldta) {
 	SharedPreferences settings = getSharedPreferences(ALARM_DATA, Context.MODE_PRIVATE);
 	SharedPreferences.Editor editor = settings.edit();
@@ -139,7 +148,10 @@ public class TimePickerActivity extends Activity {
 	}
 
     }
-
+/**
+ * get the saved alarm data from the shared preference
+ * @return
+ */
     private ArrayList<AlarmData> getSavedTimeList() {
 	SharedPreferences prefs = getSharedPreferences(ALARM_DATA, Context.MODE_PRIVATE);
 	ArrayList<AlarmData> alarmlist = null;
@@ -151,6 +163,15 @@ public class TimePickerActivity extends Activity {
 	    Log.e("TimePickerActivity:saveTime", "Error occured while reading alarm data:" + e.getMessage());
 	}
 	return alarmlist;
+    }
+    
+    /**
+     * finally set the alarm background trigger service
+     */
+    private void trigerAlarmScheduler(){
+	Log.d("TimePickerActivity", "setOnClickListener");
+	AlarmShedulerAction shedulealarm = new AlarmShedulerAction(getApplicationContext());
+	shedulealarm.setAlarm();
     }
 
 }
