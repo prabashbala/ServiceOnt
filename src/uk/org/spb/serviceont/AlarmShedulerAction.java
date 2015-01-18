@@ -1,17 +1,15 @@
 package uk.org.spb.serviceont;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import uk.org.spb.serviceont.data.AlarmData;
+import uk.org.spb.serviceont.util.AlarmDataHandler;
 import uk.org.spb.serviceont.util.ApplicationContext;
-import uk.org.spb.serviceont.util.ObjectSerializer;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 public class AlarmShedulerAction {
@@ -67,16 +65,7 @@ public class AlarmShedulerAction {
      * TODO: moved this method to a utility class with the getsavedTime method.
      */
     private ArrayList<AlarmData> getSavedTimeList() {
-	SharedPreferences prefs = context.getSharedPreferences(ALARM_DATA, Context.MODE_PRIVATE);
-	ArrayList<AlarmData> alarmlist = null;
-	try {
-	    Log.d("TimePickerActivity:saveTime", "Reading Alarm data");
-	    alarmlist = (ArrayList<AlarmData>) ObjectSerializer.deserialize(prefs.getString("alarmobject",
-		    ObjectSerializer.serialize(new ArrayList<AlarmData>())));
-	} catch (IOException e) {
-	    Log.e("TimePickerActivity:saveTime", "Error occured while reading alarm data:" + e.getMessage());
-	}
-	return alarmlist;
+	return AlarmDataHandler.getSavedTimeList();
     }	
     
 

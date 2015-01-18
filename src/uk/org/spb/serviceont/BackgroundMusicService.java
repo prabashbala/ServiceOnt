@@ -1,5 +1,9 @@
 package uk.org.spb.serviceont;
 
+import java.util.Calendar;
+
+import uk.org.spb.serviceont.data.AlarmData;
+import uk.org.spb.serviceont.util.AlarmDataHandler;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -25,14 +29,25 @@ public class BackgroundMusicService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-	Log.d("BackgroundMusicService:onStartCommand", "Playing audio file");
-	
-	if(){
+	Log.d("BackgroundMusicService:onStartCommand", "Playing audio file and intent is: "+intent);
+	/*Calendar rightNow = Calendar.getInstance();
+	int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+	int mintue = rightNow.get(Calendar.MINUTE);
+	AlarmData alarmdata = new AlarmData(rightNow.getTimeInMillis(), hour, mintue);
+	if (AlarmDataHandler.isAnAlarmSetTime(alarmdata)) {
+	    Log.d("BackgroundMusicService:onStartCommand", "song ready to play: "+intent);
+	    playSong();
 	    
+	    return Service.START_STICKY;
+	}*/
+	
+	if(intent!=null){
+	    
+	    Log.d("BackgroundMusicService:onStartCommand", "song ready to play: "+intent);
+	    playSong();
+	    return Service.START_STICKY;
 	}
-	playSong();
-
-	return Service.START_STICKY;
+	return Service.START_NOT_STICKY;
     }
 
     @Override
@@ -91,7 +106,7 @@ public class BackgroundMusicService extends Service {
 	    AssetFileDescriptor mp3file = getAssets().openFd("Ruwan.mp3");
 	    player.setDataSource(mp3file.getFileDescriptor(), mp3file.getStartOffset(), mp3file.getLength());
 	    player.prepare();
-	    
+
 	    setNotification();
 	    player.start();
 
@@ -101,8 +116,8 @@ public class BackgroundMusicService extends Service {
 		public void onCompletion(MediaPlayer mp) {
 		    // TODO Auto-generated method stub
 		    Log.d("BackgroundMusicService:oncreate", "Clearing Notification");
-		    if(mNM!=null)
-		    mNM.cancel(0);
+		    if (mNM != null)
+			mNM.cancel(0);
 		    Log.d("BackgroundMusicService:oncreate", "Notification cleared");
 		}
 	    });

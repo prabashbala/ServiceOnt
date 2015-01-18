@@ -1,7 +1,8 @@
-package uk.org.spb.serviceont;
+package uk.org.spb.serviceont.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import uk.org.spb.serviceont.data.AlarmData;
 import uk.org.spb.serviceont.util.ApplicationContext;
@@ -20,14 +21,14 @@ public class AlarmDataHandler {
      * 
      * @param aldta
      */
-    private static void saveTimeList(ArrayList<AlarmData> aldta) {
+    public static void saveTimeList(ArrayList<AlarmData> aldta) {
 	SharedPreferences.Editor editor = prefs.edit();
 	try {
-	    Log.d("TimePickerActivity:saveTime", "Saving Alarm data size: " + aldta.size() + " Items: " + aldta);
+	    Log.d("AlarmDataHandler:saveTimeList", "Saving Alarm data size: " + aldta.size() + " Items: " + aldta);
 	    editor.putString("alarmobject", ObjectSerializer.serialize(aldta));
 	    editor.commit();
 	} catch (IOException e) {
-	    Log.e("TimePickerActivity:saveTime", "Error occured while saving alarm data:" + e.getMessage());
+	    Log.e("AlarmDataHandler:saveTimeList", "Error occured while saving alarm data:" + e.getMessage());
 	}
 
     }
@@ -37,16 +38,32 @@ public class AlarmDataHandler {
      * 
      * @return
      */
-    private static ArrayList<AlarmData> getSavedTimeList() {
+    public static ArrayList<AlarmData> getSavedTimeList() {
 	ArrayList<AlarmData> alarmlist = null;
 	try {
-	    Log.d("TimePickerActivity:saveTime", "Reading Alarm data");
+	    Log.d("AlarmDataHandler:getSavedTimeList", "Reading Alarm data");
 	    alarmlist = (ArrayList<AlarmData>) ObjectSerializer.deserialize(prefs.getString("alarmobject",
 		    ObjectSerializer.serialize(new ArrayList<AlarmData>())));
 	} catch (IOException e) {
-	    Log.e("TimePickerActivity:saveTime", "Error occured while reading alarm data:" + e.getMessage());
+	    Log.e("AlarmDataHandler:getSavedTimeList", "Error occured while reading alarm data:" + e.getMessage());
 	}
 	return alarmlist;
+    }
+    
+    public static boolean isAnAlarmSetTime(AlarmData alarmData){
+	
+	ArrayList<AlarmData> alarmlist=getSavedTimeList();
+	Log.d("AlarmDataHandler:isAnAlarmSetTime", "checking alarm");
+	
+	for(AlarmData almd : alarmlist){
+	    
+	    if(almd.toString().equals(alarmData.toString())){
+		Log.d("AlarmDataHandler:isAnAlarmSetTime", "alarm found");
+		return true;
+	    }
+	}
+	return false;
+	
     }
 
 }

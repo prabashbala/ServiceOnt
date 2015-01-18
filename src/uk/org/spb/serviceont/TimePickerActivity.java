@@ -1,21 +1,17 @@
 package uk.org.spb.serviceont;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
 import uk.org.spb.serviceont.data.AlarmData;
-import uk.org.spb.serviceont.util.ObjectSerializer;
+import uk.org.spb.serviceont.util.AlarmDataHandler;
 import uk.org.spb.serviceont.util.SwipeDismissListViewTouchListener;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -143,16 +139,7 @@ public class TimePickerActivity extends Activity {
      * @param aldta
      */
     private void saveTimeList(ArrayList<AlarmData> aldta) {
-	SharedPreferences settings = getSharedPreferences(ALARM_DATA, Context.MODE_PRIVATE);
-	SharedPreferences.Editor editor = settings.edit();
-	try {
-	    Log.d("TimePickerActivity:saveTime", "Saving Alarm data size: " + aldta.size() + " Items: " + aldta);
-	    editor.putString("alarmobject", ObjectSerializer.serialize(aldta));
-	    editor.commit();
-	} catch (IOException e) {
-	    Log.e("TimePickerActivity:saveTime", "Error occured while saving alarm data:" + e.getMessage());
-	}
-
+	AlarmDataHandler.saveTimeList(aldta);
     }
 
     /**
@@ -161,16 +148,7 @@ public class TimePickerActivity extends Activity {
      * @return
      */
     private ArrayList<AlarmData> getSavedTimeList() {
-	SharedPreferences prefs = getSharedPreferences(ALARM_DATA, Context.MODE_PRIVATE);
-	ArrayList<AlarmData> alarmlist = null;
-	try {
-	    Log.d("TimePickerActivity:saveTime", "Reading Alarm data");
-	    alarmlist = (ArrayList<AlarmData>) ObjectSerializer.deserialize(prefs.getString("alarmobject",
-		    ObjectSerializer.serialize(new ArrayList<AlarmData>())));
-	} catch (IOException e) {
-	    Log.e("TimePickerActivity:saveTime", "Error occured while reading alarm data:" + e.getMessage());
-	}
-	return alarmlist;
+	return AlarmDataHandler.getSavedTimeList();
     }
 
     /**
@@ -178,7 +156,7 @@ public class TimePickerActivity extends Activity {
      */
     private void trigerAlarmScheduler() {
 	Log.d("TimePickerActivity", "setOnClickListener");
-	AlarmShedulerAction shedulealarm = new AlarmShedulerAction(getApplicationContext());
+	AlarmShedulerAction shedulealarm = new AlarmShedulerAction();
 	shedulealarm.setAlarm();
     }
 
