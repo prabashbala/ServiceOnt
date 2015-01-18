@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import uk.org.spb.serviceont.data.AlarmData;
+import uk.org.spb.serviceont.util.ApplicationContext;
 import uk.org.spb.serviceont.util.ObjectSerializer;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -16,14 +17,14 @@ import android.util.Log;
 public class AlarmShedulerAction {
 
     private static final String ALARM_DATA = "alarmdata";
-    private Context context=null;
+    private Context context=ApplicationContext.getAppContext();
     private ArrayList<AlarmData> alarmlist =null;
     
 /**
  * Set alarm trigger back ground service
  */
     public void setAlarm() {
-
+	alarmlist=getSavedTimeList();
 	Log.d("AlarmShedulerAction:setAlarm", "Setting alarm tigger activity");
 	// readAlarmData(context);
 	
@@ -44,15 +45,21 @@ public class AlarmShedulerAction {
 	    alarm.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
 	            AlarmManager.INTERVAL_DAY, pintent);
 	    
+	    
+	    
 	    Log.d("AlarmShedulerAction:setAlarm", "Repeating alarm was activated successfully");
 	}
     }
     
+    
     public AlarmShedulerAction(Context context) {
 	Log.d("AlarmShedulerAction", "Setting alarm shedule job");
 	this.context = context;
-	alarmlist=getSavedTimeList();
     }
+    
+    public AlarmShedulerAction() {
+   	Log.d("AlarmShedulerAction", "AlarmShedulerAction inside default contstructor");
+       }
     
     /**
      * Get alarm time data from the shared preference
@@ -70,7 +77,7 @@ public class AlarmShedulerAction {
 	    Log.e("TimePickerActivity:saveTime", "Error occured while reading alarm data:" + e.getMessage());
 	}
 	return alarmlist;
-    }
+    }	
     
 
 }

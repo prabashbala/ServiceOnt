@@ -26,6 +26,10 @@ public class BackgroundMusicService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 	Log.d("BackgroundMusicService:onStartCommand", "Playing audio file");
+	
+	if(){
+	    
+	}
 	playSong();
 
 	return Service.START_STICKY;
