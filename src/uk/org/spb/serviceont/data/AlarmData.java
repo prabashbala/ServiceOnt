@@ -46,6 +46,11 @@ public class AlarmData implements Serializable {
 	return iHour + ":" + iMinute;
     }
     
+    public int getRequestCode() {
+	// TODO Auto-generated method stub
+	return iHour + iMinute;
+    }
+    
     @Override
     public boolean equals(Object o) {
         // TODO Auto-generated method stub

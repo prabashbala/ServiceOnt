@@ -119,18 +119,20 @@ public class TimePickerActivity extends Activity {
 	if (isRemoval) {
 	    iadapter.remove(alarmdata);
 	    ialarmdata.remove(alarmdata);
+	    removeAlarm(alarmdata);
 
 	    Log.d("SwipeDismissListView:adjustAlarmData: Remove", "Alarm: " + alarmdata + " from alarmdata size: "
 		    + ialarmdata.size());
 	} else {
 	    ialarmdata.add(alarmdata);
 	    iadapter.add(alarmdata);
+	    addAlarm(alarmdata);
 	    Log.d("TimePickerActivity:adjustAlarmData: Add", "Alarm:" + ialarmdata.size());
 	}
 
 	saveTimeList(ialarmdata);
 	iadapter.notifyDataSetChanged();
-	trigerAlarmScheduler();
+	//trigerAlarmScheduler();
     }
 
     /**
@@ -154,10 +156,19 @@ public class TimePickerActivity extends Activity {
     /**
      * finally set the alarm background trigger service
      */
-    private void trigerAlarmScheduler() {
-	Log.d("TimePickerActivity", "setOnClickListener");
+    private void addAlarm(AlarmData alarm) {
+	Log.d("TimePickerActivity:addAlarm", "adding single alarm");
 	AlarmShedulerAction shedulealarm = new AlarmShedulerAction();
-	shedulealarm.setAlarm();
+	shedulealarm.addSingleAlarm(alarm);
+    }
+    
+    /**
+     * finally set the alarm background trigger service
+     */
+    private void removeAlarm(AlarmData alarm) {
+	Log.d("TimePickerActivity:removeAlarm", "remove single alarm");
+	AlarmShedulerAction shedulealarm = new AlarmShedulerAction();
+	shedulealarm.removeSingleAlarm(alarm);
     }
 
 }
