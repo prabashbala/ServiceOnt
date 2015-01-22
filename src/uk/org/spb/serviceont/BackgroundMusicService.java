@@ -29,12 +29,15 @@ public class BackgroundMusicService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-	Log.d("BackgroundMusicService:onStartCommand", "Playing audio file and intent is: "+intent);
-	
-	if(intent!=null){
-	    Log.d("BackgroundMusicService:onStartCommand", "song ready to play: "+intent);
+	Log.d("BackgroundMusicService:onStartCommand", "Playing audio file and intent is: " + intent);
+
+	Calendar rightNow = Calendar.getInstance();
+	int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+	int mintue = rightNow.get(Calendar.MINUTE);
+	AlarmData alarmdata = new AlarmData(rightNow.getTimeInMillis(), hour, mintue);
+	if (AlarmDataHandler.isAnAlarmSetTime(alarmdata)) {
+	    Log.d("BackgroundMusicService:onStartCommand", "song ready to play: " + intent);
 	    playSong();
-	    return Service.START_STICKY;
 	}
 	return Service.START_NOT_STICKY;
     }

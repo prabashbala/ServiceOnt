@@ -58,7 +58,7 @@ public class AlarmDataHandler {
 	for(AlarmData almd : alarmlist){
 	    
 	    if(almd.toString().equals(alarmData.toString())){
-		Log.d("AlarmDataHandler:isAnAlarmSetTime", "alarm found");
+		Log.d("AlarmDataHandler:isAnAlarmSetTime", "alarm found"+alarmData);
 		return true;
 	    }
 	}
