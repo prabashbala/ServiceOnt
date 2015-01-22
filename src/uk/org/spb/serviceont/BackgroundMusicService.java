@@ -75,7 +75,7 @@ public class BackgroundMusicService extends Service {
 	PendingIntent pendintIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 	registerReceiver(receiver, new IntentFilter(NOTIFICATION_DELETED_ACTION));
 	Notification n = new Notification.Builder(this).setAutoCancel(true)
-		.setContentTitle("Piritha Chanting Scheduler").setContentText("Now playing pirith")
+		.setContentTitle("Piritha Chanting-by Dhamma Sermons").setContentText("Now playing Piritha")
 		.setDeleteIntent(pendintIntent).setSmallIcon(R.drawable.ic_stat_notify_msg).build();
 	mNM.notify(0, n);
 	Log.d("BackgroundMusicService:oncreate", "Notification set");
