@@ -31,7 +31,7 @@
         <item name="android:layout_marginRight">4dip</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:background">@drawable/panel_undo_holo</item>
+        <item name="android:background">@drawable/ic_panel_undo_holo</item>
         <item name="android:visibility">gone</item>
         <item name="android:alpha">0</item>
         <item name="android:clickable">true</item>
