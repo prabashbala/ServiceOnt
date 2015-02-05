@@ -8,6 +8,9 @@
         android:minSdkVersion="16"
         android:targetSdkVersion="21" />
       <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+      
+       <!-- Required to read and write the expansion files on shared storage -->
+      <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
