@@ -5,6 +5,7 @@ import java.util.Calendar;
 import uk.org.spb.serviceont.data.AlarmData;
 import uk.org.spb.serviceont.util.APKExpansionFileHandler;
 import uk.org.spb.serviceont.util.AlarmDataHandler;
+import uk.org.spb.serviceont.util.ApplicationCofig;
 import uk.org.spb.serviceont.util.ZipResourceFile;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -97,10 +98,8 @@ public class BackgroundMusicService extends Service {
 	}
 	// set the data source
 	try {
-	    ZipResourceFile expansionFile=null;
-	    String res = APKExpansionFileHandler.getAPKExpansionFiles();
-	    expansionFile = APKExpansionFileHandler.getResourceZipFile(res);
-	    AssetFileDescriptor mp3file =expansionFile.getAssetFileDescriptor("Ruwan.mp3");
+	    ZipResourceFile expansionFile = APKExpansionFileHandler.getAPKExpansionFiles();
+	    AssetFileDescriptor mp3file =expansionFile.getAssetFileDescriptor(ApplicationCofig.MP3FILENAME);
 	    //AssetFileDescriptor mp3file = getAssets().openFd(res);
 	    player.setDataSource(mp3file.getFileDescriptor(), mp3file.getStartOffset(), mp3file.getLength());
 	    player.prepare();
