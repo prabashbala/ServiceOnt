@@ -13,8 +13,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 public class TimePickerActivity extends Activity {
@@ -23,6 +25,7 @@ public class TimePickerActivity extends Activity {
     /** Private members of the class */
     private ImageView displayTime;
     private ListView listview;
+    private FrameLayout noAlarmBackgroundImage;
 
     private int pHour;
     private int pMinute;
@@ -40,8 +43,14 @@ public class TimePickerActivity extends Activity {
 	setContentView(R.layout.activity_main);
 	listview = (ListView) findViewById(R.id.alarms_list);
 	displayTime = (ImageView) findViewById(R.id.alarm_add_alarm);
+	noAlarmBackgroundImage = (FrameLayout) findViewById(R.id.main);
+
 	ArrayList<AlarmData> ialarmdata = getSavedTimeList();
 	Log.d("TimePickerActivity:onCreate:onClick", "alarmdata udated: " + ialarmdata.size());
+
+	if (ialarmdata.size() > 0) {
+	    showNoAlarmBackground(false);
+	}
 
 	/** Listener for click event of the button */
 	displayTime.setOnClickListener(new View.OnClickListener() {
@@ -119,20 +128,25 @@ public class TimePickerActivity extends Activity {
 	if (isRemoval) {
 	    iadapter.remove(alarmdata);
 	    ialarmdata.remove(alarmdata);
-	    removeAlarm(alarmdata);
+	    removeScheduledAlarm(alarmdata);
 
 	    Log.d("SwipeDismissListView:adjustAlarmData: Remove", "Alarm: " + alarmdata + " from alarmdata size: "
 		    + ialarmdata.size());
 	} else {
 	    ialarmdata.add(alarmdata);
 	    iadapter.add(alarmdata);
-	    addAlarm(alarmdata);
+	    scheduleNewAlarm(alarmdata);
 	    Log.d("TimePickerActivity:adjustAlarmData: Add", "Alarm:" + ialarmdata.size());
 	}
 
 	saveTimeList(ialarmdata);
+	if(iadapter.getCount()>0){
+	    showNoAlarmBackground(false);
+	}else{
+	    showNoAlarmBackground(true);
+	}
 	iadapter.notifyDataSetChanged();
-	//trigerAlarmScheduler();
+	// trigerAlarmScheduler();
     }
 
     /**
@@ -156,19 +170,26 @@ public class TimePickerActivity extends Activity {
     /**
      * finally set the alarm background trigger service
      */
-    private void addAlarm(AlarmData alarm) {
-	Log.d("TimePickerActivity:addAlarm", "adding single alarm");
+    private void scheduleNewAlarm(AlarmData alarm) {
+	Log.d("TimePickerActivity:scheduleNewAlarm", "adding single alarm");
 	AlarmShedulerAction shedulealarm = new AlarmShedulerAction();
 	shedulealarm.addSingleAlarm(alarm);
     }
-    
+
     /**
      * finally set the alarm background trigger service
      */
-    private void removeAlarm(AlarmData alarm) {
-	Log.d("TimePickerActivity:removeAlarm", "remove single alarm");
+    private void removeScheduledAlarm(AlarmData alarm) {
+	Log.d("TimePickerActivity:removeScheduledAlarm", "remove single alarm");
 	AlarmShedulerAction shedulealarm = new AlarmShedulerAction();
 	shedulealarm.removeSingleAlarm(alarm);
+    }
+
+    private void showNoAlarmBackground(boolean isshow) {
+	if (isshow)
+	    noAlarmBackgroundImage.setBackgroundResource(R.drawable.ic_noalarms);
+	else
+	    noAlarmBackgroundImage.setBackgroundResource(0);
     }
 
 }

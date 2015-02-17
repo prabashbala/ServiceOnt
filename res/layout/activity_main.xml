@@ -19,7 +19,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="?android:attr/actionBarSize" >
+    android:paddingTop="?android:attr/actionBarSize" 
+    android:background="@drawable/ic_noalarms">
 
     <ListView
         android:id="@+id/alarms_list"
@@ -29,7 +30,7 @@
         android:descendantFocusability="beforeDescendants"
         android:divider="@null"
         android:dividerHeight="0dp" />
-
+<!-- 
     <TextView
         android:id="@+id/alarms_empty_view"
         style="@style/no_alarms"
@@ -40,7 +41,7 @@
         android:drawableTop="@drawable/ic_noalarms"
         android:paddingBottom="88dp"
         android:text="@string/no_alarms"
-        android:textColor="#4cffffff" />
+        android:textColor="#4cffffff" /> -->
 
     <FrameLayout
         android:id="@+id/alarms_footer_view"

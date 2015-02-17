@@ -1,4 +1,3 @@
-
 package uk.org.spb.serviceont.util;
 
 /*
