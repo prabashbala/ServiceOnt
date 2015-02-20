@@ -1,12 +1,12 @@
-package uk.com.balasuriya.serviceont;
+package uk.co.balasuriya.serviceont;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import uk.com.balasuriya.serviceont.data.AlarmData;
-import uk.com.balasuriya.serviceont.util.AlarmDataHandler;
-import uk.com.balasuriya.serviceont.util.ApplicationContext;
+import uk.co.balasuriya.serviceont.data.AlarmData;
+import uk.co.balasuriya.serviceont.util.AlarmDataHandler;
+import uk.co.balasuriya.serviceont.util.ApplicationContext;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;

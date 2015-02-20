@@ -1,4 +1,4 @@
-package uk.com.balasuriya.serviceont.data;
+package uk.co.balasuriya.serviceont.data;
 
 import java.io.Serializable;
 
@@ -43,7 +43,21 @@ public class AlarmData implements Serializable {
     @Override
     public String toString() {
 	// TODO Auto-generated method stub
-	return iHour + ":" + iMinute;
+	String minute="";
+	String hour="";
+	
+	if(iMinute<10){
+	    minute="0"+ iMinute;
+	}else{
+	    minute=""+ iMinute;
+	}
+	
+	if(iHour<10){
+	    hour="0"+iHour;
+	}else{
+	    hour=""+iHour;
+	}
+	return hour + ":" + minute;
     }
     
     public int getRequestCode() {

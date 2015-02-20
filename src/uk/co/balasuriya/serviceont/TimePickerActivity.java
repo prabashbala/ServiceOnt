@@ -1,11 +1,11 @@
-package uk.com.balasuriya.serviceont;
+package uk.co.balasuriya.serviceont;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-import uk.com.balasuriya.serviceont.data.AlarmData;
-import uk.com.balasuriya.serviceont.util.AlarmDataHandler;
-import uk.com.balasuriya.serviceont.util.SwipeDismissListViewTouchListener;
+import uk.co.balasuriya.serviceont.data.AlarmData;
+import uk.co.balasuriya.serviceont.util.AlarmDataHandler;
+import uk.co.balasuriya.serviceont.util.SwipeDismissListViewTouchListener;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -13,9 +13,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 public class TimePickerActivity extends Activity {
@@ -24,7 +24,7 @@ public class TimePickerActivity extends Activity {
     /** Private members of the class */
     private ImageView displayTime;
     private ListView listview;
-    private FrameLayout noAlarmBackgroundImage;
+    private TextView noAlarmBackgroundImage;
 
     private int pHour;
     private int pMinute;
@@ -42,7 +42,7 @@ public class TimePickerActivity extends Activity {
 	setContentView(R.layout.activity_main);
 	listview = (ListView) findViewById(R.id.alarms_list);
 	displayTime = (ImageView) findViewById(R.id.alarm_add_alarm);
-	noAlarmBackgroundImage = (FrameLayout) findViewById(R.id.main);
+	noAlarmBackgroundImage = (TextView) findViewById(R.id.alarms_empty_view);
 
 	ArrayList<AlarmData> ialarmdata = getSavedTimeList();
 	Log.d("TimePickerActivity:onCreate:onClick", "alarmdata udated: " + ialarmdata.size());
@@ -186,9 +186,9 @@ public class TimePickerActivity extends Activity {
 
     private void showNoAlarmBackground(boolean isshow) {
 	if (isshow)
-	    noAlarmBackgroundImage.setBackgroundResource(R.drawable.ic_noalarms);
+	    noAlarmBackgroundImage.setVisibility(View.VISIBLE);
 	else
-	    noAlarmBackgroundImage.setBackgroundResource(0);
+	    noAlarmBackgroundImage.setVisibility(View.INVISIBLE);
     }
 
 }

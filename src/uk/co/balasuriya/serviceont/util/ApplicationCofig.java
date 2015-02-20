@@ -1,4 +1,4 @@
-package uk.com.balasuriya.serviceont.util;
+package uk.co.balasuriya.serviceont.util;
 
 /**
  * This is the main application configuration file
