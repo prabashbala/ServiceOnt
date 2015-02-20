@@ -1,4 +1,4 @@
-package uk.org.spb.serviceont.util;
+package uk.com.balasuriya.serviceont.util;
 
 /**
  * This is the main application configuration file

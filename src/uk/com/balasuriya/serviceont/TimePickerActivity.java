@@ -1,11 +1,11 @@
-package uk.org.spb.serviceont;
+package uk.com.balasuriya.serviceont;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-import uk.org.spb.serviceont.data.AlarmData;
-import uk.org.spb.serviceont.util.AlarmDataHandler;
-import uk.org.spb.serviceont.util.SwipeDismissListViewTouchListener;
+import uk.com.balasuriya.serviceont.data.AlarmData;
+import uk.com.balasuriya.serviceont.util.AlarmDataHandler;
+import uk.com.balasuriya.serviceont.util.SwipeDismissListViewTouchListener;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -16,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
 public class TimePickerActivity extends Activity {

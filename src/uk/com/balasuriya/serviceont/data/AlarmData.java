@@ -1,4 +1,4 @@
-package uk.org.spb.serviceont.data;
+package uk.com.balasuriya.serviceont.data;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package uk.org.spb.serviceont.util;
+package uk.com.balasuriya.serviceont.util;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

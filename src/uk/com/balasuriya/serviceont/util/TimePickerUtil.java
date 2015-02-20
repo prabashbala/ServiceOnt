@@ -1,4 +1,4 @@
-package uk.org.spb.serviceont.util;
+package uk.com.balasuriya.serviceont.util;
 
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog.OnTimeSetListener;

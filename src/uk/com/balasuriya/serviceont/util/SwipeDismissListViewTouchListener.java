@@ -1,4 +1,4 @@
-package uk.org.spb.serviceont.util;
+package uk.com.balasuriya.serviceont.util;
 
 /*
  * Copyright 2013 Google Inc.

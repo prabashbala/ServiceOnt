@@ -1,12 +1,13 @@
-package uk.org.spb.serviceont;
+package uk.com.balasuriya.serviceont;
 
 import java.util.Calendar;
 
-import uk.org.spb.serviceont.data.AlarmData;
-import uk.org.spb.serviceont.util.APKExpansionFileHandler;
-import uk.org.spb.serviceont.util.AlarmDataHandler;
-import uk.org.spb.serviceont.util.ApplicationCofig;
-import uk.org.spb.serviceont.util.ZipResourceFile;
+import uk.com.balasuriya.serviceont.data.AlarmData;
+import uk.com.balasuriya.serviceont.util.APKExpansionFileHandler;
+import uk.com.balasuriya.serviceont.util.AlarmDataHandler;
+import uk.com.balasuriya.serviceont.util.ApplicationCofig;
+import uk.com.balasuriya.serviceont.util.ZipResourceFile;
+import uk.com.balasuriya.serviceont.R;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;

@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Dhamma Sermons</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="service_name">Hellow Service</string>
+    <string name="app_name">Seth Pirith</string>
     <!-- String for no alarms -->
-    <string name="no_alarms">No Alarms</string>
+    <string name="no_alarms">No alarms</string>
      <!-- Menu item on Alarm Clock screen: Add alarm -->
     <string name="add_alarm">Add alarm</string>
-    <!-- Describes the purpose of the button which pops up a menu of setting choices -->
-    <string name="button_menu">More options</string>
      <!-- Toast content when an alarm was deleted  -->
     <string name="alarm_deleted">Alarm deleted.</string>
+    <string name="service_name">Seth Pirith Broadcasting Service</string>
+    
 
 </resources>

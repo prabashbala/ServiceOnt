@@ -1,4 +1,4 @@
-package uk.org.spb.serviceont;
+package uk.com.balasuriya.serviceont;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

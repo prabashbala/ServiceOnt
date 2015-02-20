@@ -1,12 +1,12 @@
-package uk.org.spb.serviceont.util;
+package uk.com.balasuriya.serviceont.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import uk.org.spb.serviceont.data.AlarmData;
-import uk.org.spb.serviceont.util.ApplicationContext;
-import uk.org.spb.serviceont.util.ObjectSerializer;
+import uk.com.balasuriya.serviceont.data.AlarmData;
+import uk.com.balasuriya.serviceont.util.ApplicationContext;
+import uk.com.balasuriya.serviceont.util.ObjectSerializer;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;

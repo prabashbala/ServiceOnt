@@ -1,4 +1,4 @@
-package uk.org.spb.serviceont.util;
+package uk.com.balasuriya.serviceont.util;
 
 import java.io.File;
 import java.io.IOException;
