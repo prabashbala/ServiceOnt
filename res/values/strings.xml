@@ -10,5 +10,9 @@
     <string name="alarm_deleted">Alarm deleted.</string>
     <string name="service_name">Seth Pirith Broadcasting Service</string>
     
+    <string name="no_audio_desc">No audio file found</string>
+     <string name="playnow">play</string>
+    
+    
 
 </resources>

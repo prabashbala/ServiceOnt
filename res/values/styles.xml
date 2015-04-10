@@ -23,6 +23,12 @@
         <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
     
+     <style name="no_audio">
+        <item name="android:textSize">@dimen/no_alarms_font_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+    
      <style name="ToastBarStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dip</item>
