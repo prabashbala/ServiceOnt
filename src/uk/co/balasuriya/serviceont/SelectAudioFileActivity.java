@@ -1,9 +1,10 @@
 package uk.co.balasuriya.serviceont;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import uk.co.balasuriya.serviceont.util.APKExpansionFileHandler;
 import uk.co.balasuriya.serviceont.util.ApplicationContext;
+import uk.co.balasuriya.serviceont.util.ZipResourceFile;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -31,15 +32,12 @@ public class SelectAudioFileActivity extends Activity {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.activity_main1);
 	listview = (ListView) findViewById(R.id.audio_file_list);
+	
+	ZipResourceFile expansionFile = APKExpansionFileHandler.getAPKExpansionFiles();
+	    List<String> mp3files = expansionFile.getFileNamesList();
 
-	String[] values = new String[] { "Seth Piritha", "Sabbha papassa gatha", "Rathnamali gatha", "Seevalie piritha" };
-
-	final ArrayList<String> list = new ArrayList<String>();
-	for (int i = 0; i < values.length; ++i) {
-	    list.add(values[i]);
-	}
 	final ListViewArrayAdapter adapter = new ListViewArrayAdapter(this, R.layout.audiolistlayout,
-		R.id.play_audio_file, list);
+		R.id.play_audio_file, mp3files);
 	Log.d("onCreate:", "alarmdata:" + " Adaptor:" + adapter.getCount());
 	listview.setAdapter(adapter);
 
@@ -86,20 +84,28 @@ public class SelectAudioFileActivity extends Activity {
 
 		@Override
 		public void onClick(View v) {
-		    Intent service = new Intent(ApplicationContext.getAppContext(), BackgroundMusicService.class);
+		    Intent service = new Intent(ApplicationContext.getAppContext(), PlayNowMusicService.class);
 		    ApplicationContext.getAppContext().startService(service);
-		    Log.d("onCreate:", "");
+		    Log.d("Image button onClick:", "");
 		}
 	    });
 
-	    v.setOnClickListener(new OnClickListener() {
+	    v.setOnClickListener(new View.OnClickListener() {
 
 		@Override
 		public void onClick(View v) {
-		    Intent intent = new Intent(ApplicationContext.getAppContext(), TimePickerActivity.class);
-		    intent.putExtra("id", v.getId());
-		    startActivity(intent);
-		    Log.d("view onCreate:", "");
+		    
+		    if (v != null) {
+			
+			String label = ((TextView) v.findViewById(R.id.play_audio_file)).getText().toString();
+			
+			  Intent intent = new Intent(ApplicationContext.getAppContext(), TimePickerActivity.class);
+			    intent.putExtra("audiofileid", label);
+			    startActivity(intent);
+			    Log.d("view onClick: view id", ": "+label);
+		    } 
+		    
+		  
 		}
 	    });
 

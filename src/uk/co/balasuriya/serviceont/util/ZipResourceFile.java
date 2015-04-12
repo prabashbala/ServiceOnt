@@ -29,8 +29,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -227,6 +231,18 @@ public class ZipResourceFile {
             return entry.getAssetFileDescriptor();
         }
         return null;
+    }
+    
+    public List<String> getFileNamesList() {
+       List<String> filenames=new ArrayList<String>();
+       Set set = mHashMap.keySet();
+
+       Iterator iter = set.iterator();
+
+       while (iter.hasNext()) {
+	   filenames.add((String)iter.next());
+       }
+        return filenames;
     }
 
     /**

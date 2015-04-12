@@ -2,8 +2,12 @@ package uk.co.balasuriya.serviceont.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import uk.co.balasuriya.serviceont.util.ZipResourceFile.ZipEntryRO;
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.os.Environment;
 import android.util.Log;
 
@@ -59,5 +63,21 @@ public class APKExpansionFileHandler {
 		
 	return resourcefile;
     }
+    
+    public static List<AssetFileDescriptor> getResourceListFromZipFile() {
+   	ZipResourceFile resourcefile =getAPKExpansionFiles();
+   	List<AssetFileDescriptor> filenames=new ArrayList<AssetFileDescriptor>();
+   	    if (null != resourcefile){
+   		
+   		    Log.d("APKExpansionFileHandler:getAPKExpansionFiles", "zip file found");
+   		    ZipEntryRO[] items = resourcefile.getAllEntries();
+   		    
+   		    for(ZipEntryRO item:items){
+   			filenames.add(item.getAssetFileDescriptor());
+   		    }
+   	    }
+   		
+   	return filenames;
+       }
 
 }

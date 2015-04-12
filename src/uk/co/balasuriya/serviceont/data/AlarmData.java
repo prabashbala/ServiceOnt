@@ -8,9 +8,11 @@ public class AlarmData implements Serializable {
     private Long id;
     private int iHour;
     private int iMinute;
+    private String filename;
 
-    public AlarmData(Long id ,int iHour, int iMinute) {
+    public AlarmData(String audiofileid, Long id ,int iHour, int iMinute) {
 	super();
+	this.filename=audiofileid;
 	this.id=id;
 	this.iHour = iHour;
 	this.iMinute = iMinute;
@@ -69,6 +71,14 @@ public class AlarmData implements Serializable {
     public boolean equals(Object o) {
         // TODO Auto-generated method stub
         return ((AlarmData)o).getId().equals(this.getId());
+    }
+
+    public String getFilename() {
+	return filename;
+    }
+
+    public void setFilename(String filename) {
+	this.filename = filename;
     }
     
 }

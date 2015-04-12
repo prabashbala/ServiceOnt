@@ -3,6 +3,7 @@ package uk.co.balasuriya.serviceont.util;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 
 import uk.co.balasuriya.serviceont.data.AlarmData;
 import uk.co.balasuriya.serviceont.util.ApplicationContext;
@@ -49,6 +50,32 @@ public class AlarmDataHandler {
 	}
 	return alarmlist;
     }
+    
+    /**
+     * get the saved alarm data from the shared preference
+     * 
+     * @return list of alarmdata for given key(i.e fileid)
+     */
+    public static ArrayList<AlarmData> getSavedTimeListForKey(String key) {
+	ArrayList<AlarmData> returnlist = new ArrayList<AlarmData>();
+	try {
+	    Log.d("AlarmDataHandler:getSavedTimeList", "Reading Alarm data");
+	    ArrayList<AlarmData> alarmlist  = (ArrayList<AlarmData>) ObjectSerializer.deserialize(prefs.getString("alarmobject",
+		    ObjectSerializer.serialize(new ArrayList<AlarmData>())));
+	    
+		for (AlarmData alm:alarmlist ) {
+		    if(alm.getFilename()!=null && alm.getFilename().equalsIgnoreCase(key)){
+			returnlist.add(alm); 
+		        Log.e("remove item", alm.toString());
+		    }
+		}
+	} catch (Exception e) {
+	    Log.e("AlarmDataHandler:getSavedTimeList", "Error occured while reading alarm data:" + e.getMessage());
+	}
+	return returnlist;
+    }
+    
+    
     
     public static boolean isAnAlarmSetTime(AlarmData alarmData){
 	

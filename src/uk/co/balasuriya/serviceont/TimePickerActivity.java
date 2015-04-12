@@ -2,6 +2,7 @@ package uk.co.balasuriya.serviceont;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 import uk.co.balasuriya.serviceont.data.AlarmData;
 import uk.co.balasuriya.serviceont.util.AlarmDataHandler;
@@ -28,6 +29,8 @@ public class TimePickerActivity extends Activity {
 
     private int pHour;
     private int pMinute;
+    
+    String audiofileid=null;
 
     /**
      * This integer will uniquely define the dialog to be used for displaying
@@ -43,11 +46,16 @@ public class TimePickerActivity extends Activity {
 	listview = (ListView) findViewById(R.id.alarms_list);
 	displayTime = (ImageView) findViewById(R.id.alarm_add_alarm);
 	noAlarmBackgroundImage = (TextView) findViewById(R.id.alarms_empty_view);
+	Bundle extras = getIntent().getExtras();
+	if (extras != null) {
+	    audiofileid = extras.getString("audiofileid");
+	}
 
 	ArrayList<AlarmData> ialarmdata = getSavedTimeList();
-	Log.d("TimePickerActivity:onCreate:onClick", "alarmdata udated: " + ialarmdata.size());
+	ArrayList<AlarmData> displayAlarmData = getSavedTimeListForKey(audiofileid);
 
 	if (ialarmdata.size() > 0) {
+	    Log.d("TimePickerActivity:onCreate:onClick", "alarmdata udated: " + ialarmdata.size());
 	    showNoAlarmBackground(false);
 	}
 
@@ -60,7 +68,7 @@ public class TimePickerActivity extends Activity {
 	});
 
 	final ArrayAdapter<AlarmData> adapter = new ArrayAdapter<AlarmData>(this, R.layout.rowlayout, R.id.label,
-		ialarmdata);
+		displayAlarmData);
 	Log.d("SwipeDismissListViewTouchListener:", "alarmdata:" + ialarmdata + " Adaptor:" + adapter.getCount());
 	listview.setAdapter(adapter);
 	SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(listview,
@@ -103,7 +111,7 @@ public class TimePickerActivity extends Activity {
 					  // bug
 			pHour = hourOfDay;
 			pMinute = minute;
-			adjustAlarmData(false, new AlarmData(new Date().getTime(), hourOfDay, minute));
+			adjustAlarmData(false, new AlarmData(audiofileid,new Date().getTime(), hourOfDay, minute));
 			Log.d("TimePickerActivity:TimePickerDialog:onTimeSet", "setting alarm data");
 		    }
 		}
@@ -123,7 +131,7 @@ public class TimePickerActivity extends Activity {
     private void adjustAlarmData(boolean isRemoval, AlarmData alarmdata) {
 	Log.d("SwipeDismissListView:adjustAlarmData:", " fuction is Removal: " + isRemoval);
 	ArrayAdapter iadapter = (ArrayAdapter) listview.getAdapter();
-	ArrayList<AlarmData> ialarmdata = getSavedTimeList();
+	ArrayList<AlarmData> ialarmdata =getSavedTimeList();
 	if (isRemoval) {
 	    iadapter.remove(alarmdata);
 	    ialarmdata.remove(alarmdata);
@@ -165,6 +173,16 @@ public class TimePickerActivity extends Activity {
     private ArrayList<AlarmData> getSavedTimeList() {
 	return AlarmDataHandler.getSavedTimeList();
     }
+    
+    /**
+     * get the saved alarm data from the shared preference 
+     * 
+     * @return list of alarmdata for given key(i.e fileid)
+     */
+    private ArrayList<AlarmData> getSavedTimeListForKey(String key) {
+	return AlarmDataHandler.getSavedTimeListForKey(key);
+    }
+
 
     /**
      * finally set the alarm background trigger service

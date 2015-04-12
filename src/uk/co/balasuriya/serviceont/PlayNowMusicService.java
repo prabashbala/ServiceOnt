@@ -1,13 +1,8 @@
 package uk.co.balasuriya.serviceont;
 
-import java.util.Calendar;
-
-import uk.co.balasuriya.serviceont.data.AlarmData;
 import uk.co.balasuriya.serviceont.util.APKExpansionFileHandler;
-import uk.co.balasuriya.serviceont.util.AlarmDataHandler;
 import uk.co.balasuriya.serviceont.util.ApplicationCofig;
 import uk.co.balasuriya.serviceont.util.ZipResourceFile;
-import uk.co.balasuriya.serviceont.R;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -23,7 +18,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-public class BackgroundMusicService extends Service {
+public class PlayNowMusicService extends Service {
     private final IBinder mBinder = new MyBinder();
     // media player
     private MediaPlayer player;
@@ -33,16 +28,10 @@ public class BackgroundMusicService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-	Log.d("BackgroundMusicService:onStartCommand", "Playing audio file and intent is: " + intent);
+	Log.d("PlayNowMusicService:onStartCommand", "Playing audio file and intent is: " + intent);
 
-	Calendar rightNow = Calendar.getInstance();
-	int hour = rightNow.get(Calendar.HOUR_OF_DAY);
-	int mintue = rightNow.get(Calendar.MINUTE);
-	AlarmData alarmdata = new AlarmData("",rightNow.getTimeInMillis(), hour, mintue);
-	if (AlarmDataHandler.isAnAlarmSetTime(alarmdata)) {
-	    Log.d("BackgroundMusicService:onStartCommand", "song ready to play: " + intent);
-	    playSong();
-	}
+	Log.d("PlayNowMusicService:onStartCommand", "song ready to play: " + intent);
+	playSong();
 	return Service.START_NOT_STICKY;
     }
 
@@ -52,14 +41,14 @@ public class BackgroundMusicService extends Service {
     }
 
     public class MyBinder extends Binder {
-	BackgroundMusicService getService() {
-	    return BackgroundMusicService.this;
+	PlayNowMusicService getService() {
+	    return PlayNowMusicService.this;
 	}
     }
 
     public void setNotification() {
 
-	Log.d("BackgroundMusicService:oncreate", "Initialize BackgroundMusicService notification");
+	Log.d("PlayNowMusicService:oncreate", "Initialize PlayNowMusicService notification");
 
 	final BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -82,26 +71,26 @@ public class BackgroundMusicService extends Service {
 		.setContentTitle("Piritha Chanting-by Dhamma Sermons").setContentText("Now playing Piritha")
 		.setDeleteIntent(pendintIntent).setSmallIcon(R.drawable.ic_stat_notify_msg).build();
 	mNM.notify(0, n);
-	Log.d("BackgroundMusicService:oncreate", "Notification set");
+	Log.d("PlayNowMusicService:oncreate", "Notification set");
 
     }
 
     // play a song
     public void playSong() {
-	Log.d("BackgroundMusicService:playSong", "Playing audio file");
+	Log.d("PlayNowMusicService:playSong", "Playing audio file");
 	// play
 	if (player != null) {
-	    Log.d("BackgroundMusicService:playSong", "Player is not null");
+	    Log.d("PlayNowMusicService:playSong", "Player is not null");
 	    player.reset();
 	} else {
-	    Log.d("BackgroundMusicService:playSong", "Player is null");
+	    Log.d("PlayNowMusicService:playSong", "Player is null");
 	    player = new MediaPlayer();
 	}
 	// set the data source
 	try {
 	    ZipResourceFile expansionFile = APKExpansionFileHandler.getAPKExpansionFiles();
-	    AssetFileDescriptor mp3file =expansionFile.getAssetFileDescriptor(ApplicationCofig.MP3FILENAME);
-	    //AssetFileDescriptor mp3file = getAssets().openFd(res);
+	    AssetFileDescriptor mp3file = expansionFile.getAssetFileDescriptor(ApplicationCofig.MP3FILENAME);
+	    // AssetFileDescriptor mp3file = getAssets().openFd(res);
 	    player.setDataSource(mp3file.getFileDescriptor(), mp3file.getStartOffset(), mp3file.getLength());
 	    player.prepare();
 
@@ -113,16 +102,16 @@ public class BackgroundMusicService extends Service {
 		@Override
 		public void onCompletion(MediaPlayer mp) {
 		    // TODO Auto-generated method stub
-		    Log.d("BackgroundMusicService:oncreate", "Clearing Notification");
+		    Log.d("PlayNowMusicService:oncreate", "Clearing Notification");
 		    if (mNM != null)
 			mNM.cancel(0);
-		    Log.d("BackgroundMusicService:oncreate", "Notification cleared");
+		    Log.d("PlayNowMusicService:oncreate", "Notification cleared");
 		}
 	    });
 
-	    Log.d("BackgroundMusicService:playSong", "MediaManager activity started");
+	    Log.d("PlayNowMusicService:playSong", "MediaManager activity started");
 	} catch (Exception e) {
-	    Log.e("BackgroundMusicService:playSong", "Error starting the media manager", e);
+	    Log.e("PlayNowMusicService:playSong", "Error starting the media manager", e);
 	}
     }
 
