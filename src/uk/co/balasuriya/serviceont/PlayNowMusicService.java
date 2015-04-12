@@ -1,6 +1,7 @@
 package uk.co.balasuriya.serviceont;
 
 import uk.co.balasuriya.serviceont.util.APKExpansionFileHandler;
+import uk.co.balasuriya.serviceont.util.ApplicationCofig;
 import uk.co.balasuriya.serviceont.util.ZipResourceFile;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -95,7 +96,7 @@ public class PlayNowMusicService extends Service {
 	// set the data source
 	try {
 	    ZipResourceFile expansionFile = APKExpansionFileHandler.getAPKExpansionFiles();
-	    AssetFileDescriptor mp3file = expansionFile.getAssetFileDescriptor(filename);
+	    AssetFileDescriptor mp3file = expansionFile.getAssetFileDescriptor(filename+ApplicationCofig.FILE_EXTENTION);
 	    // AssetFileDescriptor mp3file = getAssets().openFd(res);
 	    player.setDataSource(mp3file.getFileDescriptor(), mp3file.getStartOffset(), mp3file.getLength());
 	    player.prepare();

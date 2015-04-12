@@ -240,7 +240,8 @@ public class ZipResourceFile {
        Iterator iter = set.iterator();
 
        while (iter.hasNext()) {
-	   filenames.add((String)iter.next());
+	   String fname=(String)iter.next();
+	   filenames.add(fname.substring(0, fname.length()-4));
        }
         return filenames;
     }
