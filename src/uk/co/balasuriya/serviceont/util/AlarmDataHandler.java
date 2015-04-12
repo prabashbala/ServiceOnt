@@ -75,9 +75,13 @@ public class AlarmDataHandler {
 	return returnlist;
     }
     
+    /**
+     * if matching alarmdata found then return larmdata elase return null
+     * @param alarmData
+     * @return
+     */
     
-    
-    public static boolean isAnAlarmSetTime(AlarmData alarmData){
+    public static AlarmData isAnAlarmSetTime(AlarmData alarmData){
 	
 	ArrayList<AlarmData> alarmlist=getSavedTimeList();
 	Log.d("AlarmDataHandler:isAnAlarmSetTime", "checking alarm");
@@ -86,10 +90,10 @@ public class AlarmDataHandler {
 	    
 	    if(almd.toString().equals(alarmData.toString())){
 		Log.d("AlarmDataHandler:isAnAlarmSetTime", "alarm found"+alarmData);
-		return true;
+		return almd;
 	    }
 	}
-	return false;
+	return null;
 	
     }
 

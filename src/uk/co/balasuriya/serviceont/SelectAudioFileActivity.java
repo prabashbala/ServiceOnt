@@ -32,9 +32,9 @@ public class SelectAudioFileActivity extends Activity {
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.activity_main1);
 	listview = (ListView) findViewById(R.id.audio_file_list);
-	
+
 	ZipResourceFile expansionFile = APKExpansionFileHandler.getAPKExpansionFiles();
-	    List<String> mp3files = expansionFile.getFileNamesList();
+	List<String> mp3files = expansionFile.getFileNamesList();
 
 	final ListViewArrayAdapter adapter = new ListViewArrayAdapter(this, R.layout.audiolistlayout,
 		R.id.play_audio_file, mp3files);
@@ -49,19 +49,19 @@ public class SelectAudioFileActivity extends Activity {
     }
 
     class ListViewArrayAdapter extends ArrayAdapter<String> {
-	
+
 	List<String> audiolist;
 
 	public ListViewArrayAdapter(Context context, int resource, int textViewResourceId, List<String> objects) {
 	    super(context, resource, textViewResourceId, objects);
-	    audiolist=objects;
+	    audiolist = objects;
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 	    super.getView(position, convertView, parent);
 	    View v = convertView;
-	    ViewHolder viewHolder;
+	    final ViewHolder viewHolder;
 
 	    if (v == null) {
 		LayoutInflater inflater = (LayoutInflater) ApplicationContext.getAppContext().getSystemService(
@@ -84,9 +84,17 @@ public class SelectAudioFileActivity extends Activity {
 
 		@Override
 		public void onClick(View v) {
-		    Intent service = new Intent(ApplicationContext.getAppContext(), PlayNowMusicService.class);
-		    ApplicationContext.getAppContext().startService(service);
-		    Log.d("Image button onClick:", "");
+		    String text =viewHolder.title.getText().toString();
+		    Log.d("SelectAudioFileActivity:button onclick",text);
+
+		    if (v != null) {
+
+			Intent service = new Intent(ApplicationContext.getAppContext(), PlayNowMusicService.class);
+			service.putExtra("audiofileid", text);
+			ApplicationContext.getAppContext().startService(service);
+
+			Log.d("SelectAudioFileActivity:button onclick", text);
+		    }
 		}
 	    });
 
@@ -94,18 +102,17 @@ public class SelectAudioFileActivity extends Activity {
 
 		@Override
 		public void onClick(View v) {
-		    
+
 		    if (v != null) {
-			
+
 			String label = ((TextView) v.findViewById(R.id.play_audio_file)).getText().toString();
-			
-			  Intent intent = new Intent(ApplicationContext.getAppContext(), TimePickerActivity.class);
-			    intent.putExtra("audiofileid", label);
-			    startActivity(intent);
-			    Log.d("view onClick: view id", ": "+label);
-		    } 
-		    
-		  
+
+			Intent intent = new Intent(ApplicationContext.getAppContext(), TimePickerActivity.class);
+			intent.putExtra("audiofileid", label);
+			startActivity(intent);
+			Log.d("view onClick: view id", ": " + label);
+		    }
+
 		}
 	    });
 

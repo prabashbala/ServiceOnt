@@ -1,7 +1,6 @@
 package uk.co.balasuriya.serviceont;
 
 import uk.co.balasuriya.serviceont.util.APKExpansionFileHandler;
-import uk.co.balasuriya.serviceont.util.ApplicationCofig;
 import uk.co.balasuriya.serviceont.util.ZipResourceFile;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -15,6 +14,7 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -23,6 +23,7 @@ public class PlayNowMusicService extends Service {
     // media player
     private MediaPlayer player;
     private NotificationManager mNM;
+    private String audiofileid=null;
 
     private static final String NOTIFICATION_DELETED_ACTION = "NOTIFICATION_DELETED";
 
@@ -30,8 +31,13 @@ public class PlayNowMusicService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 	Log.d("PlayNowMusicService:onStartCommand", "Playing audio file and intent is: " + intent);
 
+	Bundle extras = intent.getExtras();
+	if (extras != null) {
+	    audiofileid = extras.getString("audiofileid");
+	}
+
 	Log.d("PlayNowMusicService:onStartCommand", "song ready to play: " + intent);
-	playSong();
+	playSong(audiofileid);
 	return Service.START_NOT_STICKY;
     }
 
@@ -76,7 +82,7 @@ public class PlayNowMusicService extends Service {
     }
 
     // play a song
-    public void playSong() {
+    public void playSong(String filename) {
 	Log.d("PlayNowMusicService:playSong", "Playing audio file");
 	// play
 	if (player != null) {
@@ -89,7 +95,7 @@ public class PlayNowMusicService extends Service {
 	// set the data source
 	try {
 	    ZipResourceFile expansionFile = APKExpansionFileHandler.getAPKExpansionFiles();
-	    AssetFileDescriptor mp3file = expansionFile.getAssetFileDescriptor(ApplicationCofig.MP3FILENAME);
+	    AssetFileDescriptor mp3file = expansionFile.getAssetFileDescriptor(filename);
 	    // AssetFileDescriptor mp3file = getAssets().openFd(res);
 	    player.setDataSource(mp3file.getFileDescriptor(), mp3file.getStartOffset(), mp3file.getLength());
 	    player.prepare();

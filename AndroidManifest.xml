@@ -39,6 +39,12 @@
             android:label="@string/service_name" >
         </service>
         
+          <service
+            android:name="uk.co.balasuriya.serviceont.PlayNowMusicService"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/service_name" >
+        </service>
+        
         <receiver android:name="BootCompletedEventReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
